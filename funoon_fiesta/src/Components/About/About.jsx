@@ -42,7 +42,7 @@ const About = () => {
         <div className="flex flex-col md:flex-row w-full md:w-3/4 gap-12">
           {/* Content Section */}
           <motion.section 
-          variants={fadeIn("right", 0.3)}
+          variants={fadeIn("up", 0.3)}
           initial="hidden"
           whileInView="show"
           viewport={{ once: false, amount: 0.7 }}
@@ -63,7 +63,7 @@ const About = () => {
 
           {/* Carousel Section */}
           <motion.section 
-          variants={fadeIn("left", 0.3)}
+          variants={fadeIn("down", 0.3)}
           initial="hidden"
           whileInView="show"
           viewport={{ once: false, amount: 0.7 }}

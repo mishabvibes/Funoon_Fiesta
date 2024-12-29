@@ -233,7 +233,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const ResultsContext = createContext();
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL; // API URL from environment variables
 
 export const ResultsProvider = ({ children }) => {
     const [results, setResults] = useState([]);
@@ -243,12 +243,21 @@ export const ResultsProvider = ({ children }) => {
     const [singlePrograms, setSinglePrograms] = useState([]);
     const [topSingleParticipants, setTopSingleParticipants] = useState([]);
 
+    // Fetch results from the API with added error handling and checks
     const fetchResults = async () => {
         try {
+            console.log("API URL:", API); // Log the API URL to ensure it's correct
             const response = await axios.get(API);
+
+            // Check if the response status is OK
+            if (response.status !== 200) {
+                console.error("Error: Unexpected status code", response.status);
+                return;
+            }
+
             const data = response.data;
 
-            // Check if data is an array
+            // Check if the data is an array
             if (!Array.isArray(data)) {
                 console.error("Expected an array but got:", data);
                 return;
@@ -256,17 +265,14 @@ export const ResultsProvider = ({ children }) => {
 
             setResults(data);
 
-            // Safely handle potential undefined values
-            const teams = [
-                ...new Set(data.map((result) => result.teamName ? result.teamName.toUpperCase() : ""))
-            ];
+            // Get unique team names
+            const teams = [...new Set(data.map((result) => result.teamName ? result.teamName.toUpperCase() : ""))];
             setUniqueTeams(teams);
 
-            const programs = [
-                ...new Set(data.map((result) => result.programName ? result.programName.toUpperCase() : ""))
-            ];
+            // Get unique program names
+            const programs = [...new Set(data.map((result) => result.programName ? result.programName.toUpperCase() : ""))];
 
-            // Filter group and single programs
+            // Filter programs by category
             const groupPrograms = programs.filter((program) =>
                 data.some(
                     (result) =>
@@ -286,7 +292,7 @@ export const ResultsProvider = ({ children }) => {
             setGroupPrograms(groupPrograms);
             setSinglePrograms(singlePrograms);
 
-            // Safely filter and sort single participants
+            // Get top single participants (sort by points)
             const singleParticipants = data
                 .filter((result) => result.category?.toUpperCase() === "SINGLE")
                 .sort((a, b) => b.points - a.points)
@@ -297,10 +303,12 @@ export const ResultsProvider = ({ children }) => {
         }
     };
 
+    // Fetch results when the component mounts
     useEffect(() => {
         fetchResults();
     }, []);
 
+    // Delete result by ID and refresh results
     const deleteResult = async (id) => {
         try {
             await axios.delete(`${API}/${id}`);
@@ -310,6 +318,7 @@ export const ResultsProvider = ({ children }) => {
         }
     };
 
+    // Edit result by ID and updated data, then refresh results
     const editResult = async (id, updatedData) => {
         try {
             await axios.put(`${API}/${id}`, updatedData);
@@ -319,6 +328,7 @@ export const ResultsProvider = ({ children }) => {
         }
     };
 
+    // Add new result and refresh results
     const addResult = async (newData) => {
         try {
             await axios.post(API, newData);
@@ -350,4 +360,5 @@ export const ResultsProvider = ({ children }) => {
     );
 };
 
+// Custom hook to use the ResultsContext
 export const useResults = () => useContext(ResultsContext);
