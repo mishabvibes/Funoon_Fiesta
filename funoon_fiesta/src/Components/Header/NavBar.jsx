@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sun, Moon, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '../AdminLogin/AdminLogin';
+import logoLogo from '../../assets/img/lightlogo.png'
+import logoDark from '../../assets/img/darklogo.png'
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,8 +82,8 @@ const NavBar = () => {
       <div onClick={() => handleNavigation('/')} className="w-10 ml-7 cursor-pointer">
         <img
           src={darkMode
-            ? "../src/assets/img/lightlogo.png"
-            : "../src/assets/img/darklogo.png"
+            ? logoLogo
+            : logoDark
           }
           alt="logo"
           className="w-full"
