@@ -138,9 +138,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Award, User, Trophy, Star, ListChecks, Grid, Clipboard } from 'lucide-react';
-import { useResults } from '../../../context/DataContext';
+import { useResults, API } from '../../../context/DataContext';
 
-const API_URL = 'http://localhost:3005/api/result';
+
+const API_URL = API;
 
 const calculatePoints = (category, prize, grade) => {
   if (!category || !prize || !grade) return '';
