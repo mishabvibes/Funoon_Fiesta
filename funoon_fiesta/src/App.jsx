@@ -1,5 +1,5 @@
 import Home from "./Pages/Home"
-import CursorAnimation from "./Components/corsor/CursorAnimation";
+import CursorAnimation from "./Components/Cursor/CursorAnimation";
 import NavBar from "./Components/Header/NavBar";
 import { AuthProvider, ProtectedRoute } from "./Components/AdminLogin/AdminLogin";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
