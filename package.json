@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "dom-to-image": "^2.6.0",
-    "embla-carousel-autoplay": "^8.5.1",
-    "embla-carousel-react": "^8.5.1",
-    "prop-types": "^15.8.1"
-  }
-}
