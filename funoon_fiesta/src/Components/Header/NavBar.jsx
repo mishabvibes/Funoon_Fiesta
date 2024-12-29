@@ -97,7 +97,8 @@ const NavBar = () => {
           md:h-auto h-screen z-10 
           w-2/3 text-start md:text-center
           ${!isMenuOpen ? "right-[-100%]" : "right-0"}
-          bg-white/90 dark:bg-transparent
+          bg-transparent
+          md:bg-transparent
           backdrop-blur-lg
           shadow-lg md:shadow-none
         `}

@@ -53,7 +53,7 @@ const TeamLeader = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="py-16 h-screen flex flex-col justify-center items-center">
+    <section className="py-16 h-screen flex flex-col justify-center items-center" >
       <motion.div 
       variants={fadeIn("up", 0.3)}
       initial="hidden"

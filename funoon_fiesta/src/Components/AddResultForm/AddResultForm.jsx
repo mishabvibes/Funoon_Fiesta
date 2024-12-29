@@ -134,29 +134,23 @@
 // export default AddResultForm;
 
 
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Award, User, Trophy, Star, ListChecks, Grid, Clipboard } from 'lucide-react';
+import { useResults } from '../../../context/DataContext';
 
 const API_URL = 'http://localhost:3005/api/result';
 
 const calculatePoints = (category, prize, grade) => {
-  if (!category || !prize) return '';
+  if (!category || !prize || !grade) return '';
   
-  if (category === 'GROUP') {
-    const groupPoints = {
-      'FIRST': 25,
-      'SECOND': 20,
-      'THIRD': 15
-    };
-    return groupPoints[prize] || '';
-  }
-
-  if (!grade) return '';
-
   const pointsMatrix = {
+    'GROUP': {
+      'FIRST': { 'A': 25, 'B': 23, 'C': 21 },
+      'SECOND': { 'A': 22, 'B': 20, 'C': 18 },
+      'THIRD': { 'A': 20, 'B': 18, 'C': 16 }
+    },
     'SINGLE': {
       'FIRST': { 'A': 10, 'B': 8, 'C': 6 },
       'SECOND': { 'A': 8, 'B': 6, 'C': 4 },
@@ -173,6 +167,7 @@ const calculatePoints = (category, prize, grade) => {
 };
 
 const AddResultForm = () => {
+    const { addResult } = useResults();
     const { state } = useLocation();
     const [formData, setFormData] = useState({
         studentName: '',
@@ -194,11 +189,6 @@ const AddResultForm = () => {
     }, [state]);
 
     useEffect(() => {
-        // Clear grade when category is GROUP
-        if (formData.category === 'GROUP') {
-            setFormData(prev => ({ ...prev, grade: '' }));
-        }
-
         const calculatedPoints = calculatePoints(
             formData.category,
             formData.prize,
@@ -223,7 +213,7 @@ const AddResultForm = () => {
             if (state && state.result) {
                 await axios.put(`${API_URL}/${state.result._id}`, formData);
             } else {
-                await axios.post(API_URL, formData);
+                await addResult(formData); // Use context method instead of direct axios call
             }
             navigate("/cart");
         } catch (error) {
@@ -231,18 +221,17 @@ const AddResultForm = () => {
         }
     };
 
-    // Define form fields with conditional rendering for grade
     const formFields = [
         { name: 'teamName', icon: <Grid className="w-5 h-5 text-gray-400" />, options: ['KAMAR', 'HILAL', 'HIJAS', 'LULU', 'HAIKI', 'MARAM'] },
         { name: 'category', icon: <ListChecks className="w-5 h-5 text-gray-400" />, options: ['SINGLE', 'GROUP', 'GENERAL'] },
         { name: 'stage', icon: <Star className="w-5 h-5 text-gray-400" />, options: ['STAGE', 'NON-STAGE'] },
         { name: 'prize', icon: <Trophy className="w-5 h-5 text-gray-400" />, options: ['FIRST', 'SECOND', 'THIRD'] },
-        // Grade will be conditionally rendered separately
+        { name: 'grade', icon: <Star className="w-5 h-5 text-gray-400" />, options: ['A', 'B', 'C'] }
     ];
 
     return (
         <div className="min-h-screen px-4 py-8 sm:px-6 md:px-12">
-            <div className="max-w-lg mx-auto bg-white dark:bg-transparent dark:text-gray-400 shadow-lg dark:shadow-none rounded-lg p-6 md:p-8">
+            <div className="max-w-lg mx-auto bg-white/40 dark:bg-transparent dark:text-gray-400 shadow-lg dark:shadow-none rounded-lg p-6 md:p-8">
                 {/* Header Section */}
                 <div className="text-center mb-6">
                     <Award className="w-12 h-12 mx-auto text-blue-500 dark:text-blue-400" strokeWidth={1.5} />
@@ -302,25 +291,6 @@ const AddResultForm = () => {
                             </select>
                         </div>
                     ))}
-
-                    {/* Conditional Grade Input */}
-                    {formData.category !== 'GROUP' && (
-                        <div className="relative">
-                            <Star className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <select
-                                name="grade"
-                                value={formData.grade}
-                                onChange={handleChange}
-                                required={formData.category !== 'GROUP'}
-                                className="w-full pl-10 pr-4 py-3 border dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
-                            >
-                                <option value="">Select Grade</option>
-                                {['A', 'B', 'C'].map(option => (
-                                    <option key={option} value={option}>{option}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
 
                     {/* Points (Read-only) */}
                     <div className="relative">

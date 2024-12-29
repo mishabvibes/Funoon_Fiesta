@@ -39,7 +39,7 @@ const SearchPage = () => {
                         <input
                             type="text"
                             placeholder="Search Programs..."
-                            className="w-full text-black border-2 max-w-xl mx-auto block h-12 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300 ease-in-out"
+                            className="w-full bg-white/80 text-black border-2 max-w-xl mx-auto block h-12 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300 ease-in-out"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />

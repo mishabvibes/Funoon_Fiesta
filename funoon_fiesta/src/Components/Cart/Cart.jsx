@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { useResults } from "../../../context/DataContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Cart = () => {
-    const { results, deleteResult } = useResults();
+    const { results, deleteResult, refreshResults } = useResults();
     const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        refreshResults();
+    }, [refreshResults]);
 
     const filteredResults = results.filter((result) =>
         result.programName.toLowerCase().includes(searchQuery.toLowerCase())

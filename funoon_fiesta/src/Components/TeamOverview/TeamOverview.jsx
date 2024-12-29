@@ -53,9 +53,9 @@ const TeamOverview = () => {
   const handleResultRedirect = () => {
     navigate('/scoretable');  // Replace '/result' with your actual result route
   };
-  
+
   return (
-    <section className="h-screen flex justify-center flex-col">
+    <section className="h-screen flex justify-center flex-col" >
       <div className="flex justify-center items-center h-full py-12 flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-12">
           {teams.map((team, index) => (
@@ -102,10 +102,10 @@ const TeamOverview = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false, amount: 0.7 }}
-        className="bottom-0 left-0 w-full h-20 md:h-32 bg-repeat"
+        className="w-full h-36 bg-repeat"
         style={{
           backgroundImage: `url(${HomePattern})`,
-          backgroundSize: '152px',
+          backgroundSize: '140px',
         }}
       />
     </section>
