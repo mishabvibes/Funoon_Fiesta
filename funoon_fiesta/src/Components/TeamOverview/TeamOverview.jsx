@@ -55,9 +55,9 @@ const TeamOverview = () => {
   };
 
   return (
-    <section className="h-screen flex justify-center flex-col" >
-      <div className="flex justify-center items-center h-full py-12 flex-col">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-12">
+    <section className="h-screen w-full flex justify-center flex-col" >
+      <div className="flex justify-center items-center h-full w-full py-8 sm:py-10 md:py-12 flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-4 sm:px-8 md:px-12 md:w-3/4">
           {teams.map((team, index) => (
             <motion.div
               variants={fadeIn("right", 0.3)}
@@ -92,7 +92,7 @@ const TeamOverview = () => {
           viewport={{ once: false, amount: 0.7 }}
           className='flex justify-center items-center mt-10'
         >
-          <button onClick={handleResultRedirect} className='bg-secondery py-4 lg:py-3 px-8 md:px-16 rounded-full text-lg md:text-3xl text-white'>
+          <button onClick={handleResultRedirect} className='bg-secondery py-3 px-8 md:px-16 rounded-full text-lg md:text-3xl text-white'>
             More Results
           </button>
         </motion.div>
