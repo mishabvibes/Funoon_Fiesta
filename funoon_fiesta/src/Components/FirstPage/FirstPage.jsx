@@ -31,9 +31,7 @@ const FirstPage = () => {
                 Welcome to Funoon Fiesta
               </h1>
               <p className="mb-6 text-base md:text-lg text-gray-600 dark:text-white">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
-                et ratione illo quibusdam dolorum magni quaerat velit quis
-                perspiciatis molestiae neque tempore nam iste
+                Funooon Fiesta is the platform for students to showcse their talents. The art form of islamic culture is presented to society through Funoon Fiesta.
               </p>
               <button
                 type="button"

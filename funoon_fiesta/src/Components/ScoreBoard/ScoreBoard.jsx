@@ -41,69 +41,156 @@ const ScoreBoard = () => {
     const isActive = activeTeam === team;
 
     return (
-        <motion.div
+      <motion.div
         variants={fadeIn("up", 0.3)}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.7 }}
-          onClick={() => {setActiveTeam(isActive ? null : team) , setSelectedTeam(team)}}
-          className={`${isActive ? 'ring-0' : ''
-            } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4  hover:shadow-xl cursor-pointer`}
-        >
-          <div 
-          
-          className="flex flex-col space-y-2">
-            <div className="flex justify-between items-center">
-              <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                {team}
-              </h3>
-              <div className="flex items-center space-x-1">
-                <TrendingUp className="w-4 h-4 text-green-500" />
-                <span className="text-sm font-medium text-green-500">{totalPoints}</span>
-              </div>
-            </div>
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.7 }}
+        onClick={() => { setActiveTeam(isActive ? null : team), setSelectedTeam(team) }}
+        className={`${isActive ? 'ring-0' : ''
+          } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4  hover:shadow-xl cursor-pointer`}
+      >
+        <div
 
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-2">
-                {medals.gold > 0 && (
-                  <div className="flex items-center" title="Gold Medals">
-                    <span className="text-xl">🥇</span>
-                    <span className="text-xs font-bold ml-1">{medals.gold}</span>
-                  </div>
-                )}
-                {medals.silver > 0 && (
-                  <div className="flex items-center" title="Silver Medals">
-                    <span className="text-xl">🥈</span>
-                    <span className="text-xs font-bold ml-1">{medals.silver}</span>
-                  </div>
-                )}
-                {medals.bronze > 0 && (
-                  <div className="flex items-center" title="Bronze Medals">
-                    <span className="text-xl">🥉</span>
-                    <span className="text-xs font-bold ml-1">{medals.bronze}</span>
-                  </div>
-                )}
-              </div>
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'rotate-90' : ''}`} />
+          className="flex flex-col space-y-2">
+          <div className="flex justify-between items-center">
+            <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+              {team}
+            </h3>
+            <div className="flex items-center space-x-1">
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <span className="text-sm font-medium text-green-500">{totalPoints}</span>
             </div>
           </div>
-        </motion.div>
+
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-2">
+              {medals.gold > 0 && (
+                <div className="flex items-center" title="Gold Medals">
+                  <span className="text-xl">🥇</span>
+                  <span className="text-xs font-bold ml-1">{medals.gold}</span>
+                </div>
+              )}
+              {medals.silver > 0 && (
+                <div className="flex items-center" title="Silver Medals">
+                  <span className="text-xl">🥈</span>
+                  <span className="text-xs font-bold ml-1">{medals.silver}</span>
+                </div>
+              )}
+              {medals.bronze > 0 && (
+                <div className="flex items-center" title="Bronze Medals">
+                  <span className="text-xl">🥉</span>
+                  <span className="text-xs font-bold ml-1">{medals.bronze}</span>
+                </div>
+              )}
+            </div>
+            <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'rotate-90' : ''}`} />
+          </div>
+        </div>
+      </motion.div>
     );
   };
 
 
-  
 
-const [expandedProgram, setExpandedProgram] = useState(null);
+
+  const [expandedProgram, setExpandedProgram] = useState(null);
+
+  // const MobileScoreCard = ({ program, teamResults }) => {
+  //   const isExpanded = expandedProgram === program;
+  //   const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
+  //   const medalCounts = {
+  //     first: teamResults.filter(r => r.prize?.toLowerCase() === 'first').length,
+  //     second: teamResults.filter(r => r.prize?.toLowerCase() === 'second').length,
+  //     third: teamResults.filter(r => r.prize?.toLowerCase() === 'third').length,
+  //   };
+
+  //   return (
+  //     <motion.div
+  //       initial={false}
+  //       animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
+  //       className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
+  //     >
+  //       <div
+  //         className={`flex justify-between items-center p-4 cursor-pointer transition-all duration-300 
+  //           ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+  //         onClick={() => setExpandedProgram(isExpanded ? null : program)}
+  //       >
+  //         <div className="flex items-center space-x-3">
+  //           <Trophy className={`w-5 h-5 transition-colors duration-300 
+  //             ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
+  //           <div className="flex flex-col">
+  //             <span className={`font-semibold transition-colors duration-300 
+  //               ${isExpanded ? 'text-secondery' : ''}`}>
+  //               {program}
+  //             </span>
+  //             <div className="flex items-center space-x-2 text-sm text-gray-500">
+  //             </div>
+  //           </div>
+  //         </div>
+  //         <div className="flex items-center space-x-2">
+  //           <ChevronRight 
+  //             className={`w-5 h-5 transition-all duration-300 
+  //               ${isExpanded ? 'rotate-90 text-secondery' : 'text-gray-400'}`} 
+  //           />
+  //         </div>
+  //       </div>
+
+  //       <motion.div
+  //         initial={false}
+  //         animate={{
+  //           height: isExpanded ? 'auto' : 0,
+  //           opacity: isExpanded ? 1 : 0
+  //         }}
+  //         transition={{
+  //           duration: 0.3,
+  //           ease: "easeInOut"
+  //         }}
+  //         className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
+  //       >
+  //         {teamNames.map((team, index) => {
+  //           const result = teamResults.find(r => r.teamName.toUpperCase() === team);
+  //           if (!result) return null;
+
+  //           return (
+  //             <motion.div
+  //               initial={{ opacity: 0, x: -20 }}
+  //               animate={{ opacity: 1, x: 0 }}
+  //               transition={{ delay: index * 0.1 }}
+  //               key={team}
+  //               className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
+  //                 flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 
+  //                 transition-colors duration-200"
+  //             >
+  //               <div className="flex items-center space-x-2">
+  //                 <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
+  //               </div>
+  //               <div className="flex items-center space-x-3">
+  //                 <span className="font-semibold text-gray-900 dark:text-gray-100">
+  //                   {result.points}
+  //                 </span>
+  //                 {result.prize && (
+  //                   <span className="text-lg transform hover:scale-110 transition-transform">
+  //                     {result.prize.toLowerCase() === 'first' && '🥇'}
+  //                     {result.prize.toLowerCase() === 'second' && '🥈'}
+  //                     {result.prize.toLowerCase() === 'third' && '🥉'}
+  //                   </span>
+  //                 )}
+  //               </div>
+  //             </motion.div>
+  //           );
+  //         })}
+  //       </motion.div>
+  //     </motion.div>
+  //   );
+  // };
+
+
+  
 
 const MobileScoreCard = ({ program, teamResults }) => {
   const isExpanded = expandedProgram === program;
   const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
-  const medalCounts = {
-    first: teamResults.filter(r => r.prize?.toLowerCase() === 'first').length,
-    second: teamResults.filter(r => r.prize?.toLowerCase() === 'second').length,
-    third: teamResults.filter(r => r.prize?.toLowerCase() === 'third').length,
-  };
 
   return (
     <motion.div
@@ -111,28 +198,23 @@ const MobileScoreCard = ({ program, teamResults }) => {
       animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
       className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
     >
+      {/* Header remains the same */}
       <div
-        className={`flex justify-between items-center p-4 cursor-pointer transition-all duration-300 
-          ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+        className={`flex justify-between items-center p-4 cursor-pointer ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+          }`}
         onClick={() => setExpandedProgram(isExpanded ? null : program)}
       >
         <div className="flex items-center space-x-3">
           <Trophy className={`w-5 h-5 transition-colors duration-300 
-            ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
+             ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
           <div className="flex flex-col">
             <span className={`font-semibold transition-colors duration-300 
-              ${isExpanded ? 'text-secondery' : ''}`}>
+               ${isExpanded ? 'text-secondery' : ''}`}>
               {program}
             </span>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
             </div>
           </div>
-        </div>
-        <div className="flex items-center space-x-2">
-          <ChevronRight 
-            className={`w-5 h-5 transition-all duration-300 
-              ${isExpanded ? 'rotate-90 text-secondery' : 'text-gray-400'}`} 
-          />
         </div>
       </div>
 
@@ -142,15 +224,16 @@ const MobileScoreCard = ({ program, teamResults }) => {
           height: isExpanded ? 'auto' : 0,
           opacity: isExpanded ? 1 : 0
         }}
-        transition={{
-          duration: 0.3,
-          ease: "easeInOut"
-        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
         className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
       >
         {teamNames.map((team, index) => {
-          const result = teamResults.find(r => r.teamName.toUpperCase() === team);
-          if (!result) return null;
+          const teamResults = results.filter(r =>
+            r.teamName.toUpperCase() === team &&
+            r.programName.toUpperCase() === program.toUpperCase()
+          );
+
+          if (teamResults.length === 0) return null;
 
           return (
             <motion.div
@@ -159,23 +242,28 @@ const MobileScoreCard = ({ program, teamResults }) => {
               transition={{ delay: index * 0.1 }}
               key={team}
               className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
-                flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 
-                transition-colors duration-200"
+                flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <div className="flex items-center space-x-2">
                 <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
               </div>
               <div className="flex items-center space-x-3">
-                <span className="font-semibold text-gray-900 dark:text-gray-100">
-                  {result.points}
-                </span>
-                {result.prize && (
-                  <span className="text-lg transform hover:scale-110 transition-transform">
-                    {result.prize.toLowerCase() === 'first' && '🥇'}
-                    {result.prize.toLowerCase() === 'second' && '🥈'}
-                    {result.prize.toLowerCase() === 'third' && '🥉'}
-                  </span>
-                )}
+                <div className="flex flex-col items-end gap-1">
+                  {teamResults.map((result, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        {result.points}
+                      </span>
+                      {result.prize && (
+                        <span className="text-lg transform hover:scale-110 transition-transform">
+                          {result.prize.toLowerCase() === 'first' && '🥇'}
+                          {result.prize.toLowerCase() === 'second' && '🥈'}
+                          {result.prize.toLowerCase() === 'third' && '🥉'}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           );
@@ -184,7 +272,6 @@ const MobileScoreCard = ({ program, teamResults }) => {
     </motion.div>
   );
 };
-
 
   const renderMobileView = () => (
     <div className="space-y-6">
@@ -246,23 +333,27 @@ const MobileScoreCard = ({ program, teamResults }) => {
                 </div>
               </td>
               {teamNames.map(team => {
-                const result = results.find(
+                const teamResults = results.filter(
                   r => r.programName.toUpperCase() === program.toUpperCase() &&
                     r.teamName.toUpperCase() === team
                 );
 
                 return (
                   <td key={team} className="px-4 py-3 text-center">
-                    {result ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <span className="font-medium">{result.points}</span>
-                        {result.prize && (
-                          <span className="text-lg transform hover:scale-110 transition-transform">
-                            {result.prize.toLowerCase() === 'first' && '🥇'}
-                            {result.prize.toLowerCase() === 'second' && '🥈'}
-                            {result.prize.toLowerCase() === 'third' && '🥉'}
-                          </span>
-                        )}
+                    {teamResults.length > 0 ? (
+                      <div className="flex flex-col items-center gap-1">
+                        {teamResults.map((result, idx) => (
+                          <div key={idx} className="flex items-center justify-center space-x-2">
+                            <span className="font-medium">{result.points}</span>
+                            {result.prize && (
+                              <span className="text-lg transform hover:scale-110 transition-transform">
+                                {result.prize.toLowerCase() === 'first' && '🥇'}
+                                {result.prize.toLowerCase() === 'second' && '🥈'}
+                                {result.prize.toLowerCase() === 'third' && '🥉'}
+                              </span>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <span className="text-gray-400">-</span>
@@ -320,3 +411,15 @@ const MobileScoreCard = ({ program, teamResults }) => {
 };
 
 export default ScoreBoard;
+
+
+
+
+
+
+
+
+
+
+
+
