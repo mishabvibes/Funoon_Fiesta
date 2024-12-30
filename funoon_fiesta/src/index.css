@@ -2,10 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-  margin:0;
-  padding: 0;
-  box-sizing: border-box;
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#root {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 html.lenis,

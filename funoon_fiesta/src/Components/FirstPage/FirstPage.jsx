@@ -46,12 +46,12 @@ const FirstPage = () => {
           </motion.div>
 
           {/* Image section - hidden on mobile */}
-          <motion.div 
-          variants={fadeIn("right", 0.3)}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.7 }}
-          className="hidden md:flex w-2/5 justify-end items-center">
+          <motion.div
+            variants={fadeIn("right", 0.3)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: false, amount: 0.7 }}
+            className="hidden md:flex w-2/5 justify-end items-center">
             <img
               src={HomeImg}
               alt="Funoon Fiesta Logo"
@@ -63,11 +63,11 @@ const FirstPage = () => {
 
       {/* Pattern image positioned at the bottom */}
       <motion.div
-      variants={fadeIn("down", 0.3)}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: false, amount: 0.7 }}
-        className="w-full h-32 bg-repeat"
+        variants={fadeIn("down", 0.3)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.7 }}
+        className="w-full h-32 bg-repeat overflow-hidden"
         style={{
           backgroundImage: `url(${HomePattern})`,
           backgroundSize: '152px',
