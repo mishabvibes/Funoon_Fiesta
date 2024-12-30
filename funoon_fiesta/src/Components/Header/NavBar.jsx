@@ -5,6 +5,11 @@ import { useAuth } from '../AdminLogin/AdminLogin';
 import logoLogo from '../../assets/img/lightlogo.png'
 import logoDark from '../../assets/img/darklogo.png'
 
+// motion
+import { motion } from 'framer-motion'
+// variants
+import { fadeIn } from '../FrameMotion/variants'
+
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
@@ -65,9 +70,13 @@ const NavBar = () => {
   return (
     <nav className="flex items-center justify-between pt-8 px-6 relative">
       {/* Animated Mobile Menu Toggle */}
-      <button
+      <motion.button
+        variants={fadeIn("left", 0.3)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.7 }}
         ref={buttonRef}
-        className="md:hidden cursor-pointer z-20 transition-transform duration-300 ease-in-out"
+        className="md:hidden cursor-pointer z-20"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
       >
@@ -76,19 +85,23 @@ const NavBar = () => {
           <div className={`w-6 h-0.5 bg-black dark:bg-white mb-1.5 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></div>
           <div className={`w-6 h-0.5 bg-black dark:bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-90 -translate-y-1.5' : ''}`}></div>
         </div>
-      </button>
+      </motion.button>
 
       {/* Logo */}
-      <div onClick={() => handleNavigation('/')} className="w-10 ml-7 cursor-pointer">
-        <img
-          src={darkMode
-            ? logoLogo
-            : logoDark
-          }
-          alt="logo"
-          className="w-full"
-        />
-      </div>
+      <motion.div
+        variants={fadeIn("right", 0.3)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.7 }}
+        onClick={() => handleNavigation('/')} className="ml-7 cursor-pointer">
+        <div className='w-10 h-10 p-1.5 bg-secondery rounded-xl overflow-hidden'>
+          <img
+            src={logoLogo}
+            alt="logo"
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </motion.div>
 
       {/* Menu Items - Keeping your original blur styling */}
       <ul
@@ -96,7 +109,7 @@ const NavBar = () => {
         className={`
           md:pl-10 md:static fixed 
           duration-500 ease-linear top-0 
-          md:h-auto h-screen z-10 
+          md:h-auto h-screen z-10 mt-3 md:mt-0
           w-2/3 text-start md:text-center
           ${!isMenuOpen ? "right-[-100%]" : "right-0"}
           bg-transparent
@@ -118,7 +131,11 @@ const NavBar = () => {
               cursor-pointer
             "
           >
-            <span
+            <motion.span
+              variants={fadeIn("up", 0.3)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: false, amount: 0.7 }}
               className="
                 text-black dark:text-white 
                 font-Barlow 
@@ -129,12 +146,17 @@ const NavBar = () => {
               "
             >
               {menu.name}
-            </span>
+            </motion.span>
           </li>
         ))}
 
         {/* Mobile Auth Controls */}
-        <li className="md:hidden ml-5 my-6" onClick={handleAuthAction}>
+        <motion.li
+          variants={fadeIn("left", 0.3)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: false, amount: 0.7 }}
+          className="md:hidden ml-5 my-6" onClick={handleAuthAction}>
           <button
             className="
               flex items-center space-x-2 
@@ -146,10 +168,15 @@ const NavBar = () => {
             {user ? <LogOut className="mr-2" /> : <LogIn className="mr-2" />}
             {user ? 'Logout' : 'Login'}
           </button>
-        </li>
+        </motion.li>
 
         {/* Mobile Dark Mode Toggle */}
-        <li className="md:hidden ml-5 my-6 py-3">
+        <motion.li
+          variants={fadeIn("left", 0.3)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: false, amount: 0.7 }}
+          className="md:hidden ml-5 my-6 py-3">
           <button
             onClick={() => {
               setDarkMode(!darkMode);
@@ -168,11 +195,16 @@ const NavBar = () => {
             }
             <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
-        </li>
+        </motion.li>
       </ul>
 
       {/* Desktop Auth and Dark Mode Actions */}
-      <div className="hidden md:flex items-center space-x-4">
+      <motion.div
+        variants={fadeIn("left", 0.3)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.7 }}
+        className="hidden md:flex items-center space-x-4">
         <button
           onClick={handleAuthAction}
           className="
@@ -200,7 +232,7 @@ const NavBar = () => {
             <Moon className="text-gray-800 dark:text-white" />
           }
         </button>
-      </div>
+      </motion.div>
     </nav>
   );
 };

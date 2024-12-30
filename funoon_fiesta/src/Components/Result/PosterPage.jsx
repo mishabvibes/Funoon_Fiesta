@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Crown } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import EnhancedPoster from './WinnerPoster';
 import { useResults } from '../../../context/DataContext';
 import onStage from '../../assets/img/poster.jpeg';
@@ -9,6 +8,12 @@ import offStage from '../../assets/img/poster.jpeg';
 import img from '../../assets/img/poster.jpeg';
 import img1 from '../../assets/img/poster1.jpg';
 import img2 from '../../assets/img/poster2.jpg';
+
+// motion
+import { motion } from 'framer-motion'
+// variants
+import { fadeIn } from '../FrameMotion/variants'
+
 
 const PosterPage = () => {
   const { programName } = useParams();
@@ -18,7 +23,7 @@ const PosterPage = () => {
     category: "",
     stage: "ON STAGE"
   });
-  
+
   const posterBackgrounds = [img, img1, img2];
 
   useEffect(() => {
@@ -57,37 +62,11 @@ const PosterPage = () => {
     }
   }, [results, programName]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  };
-
   return (
     <div className="min-h-screen p-4 md:p-8">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="max-w-7xl mx-auto"
-      >
+      <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <motion.div 
-          variants={itemVariants}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center gap-2 mb-4">
             <Trophy className="w-8 h-8 text-yellow-500" />
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
@@ -98,19 +77,19 @@ const PosterPage = () => {
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Celebrating excellence and outstanding achievements in {programName}
           </p>
-        </motion.div>
+        </div>
 
         {/* Winners Overview */}
-        <motion.div 
-          variants={itemVariants}
-          className="w-full max-w-5xl mx-auto mb-16"
-        >
+        <div className="w-full max-w-5xl mx-auto mb-16">
           <div className="bg-gradient-to-r from-yellow-400/20 via-amber-500/20 to-yellow-400/20 rounded-2xl p-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               {programWinners.map((winner, index) => (
                 <motion.div
+                  variants={fadeIn("left", 0.3)}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: false, amount: 0.7 }}
                   key={index}
-                  variants={itemVariants}
                   className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 w-full md:w-auto"
                 >
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${index === 0 ? 'bg-yellow-400' : index === 1 ? 'bg-gray-400' : 'bg-amber-600'}`}>
@@ -128,12 +107,17 @@ const PosterPage = () => {
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Posters Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 w-full">
           {posterBackgrounds.map((bg, index) => (
-            <div key={index} className="flex justify-center">
+            <motion.div
+              variants={fadeIn("up", 0.3)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: false, amount: 0.7 }}
+              key={index} className="flex justify-center">
               <EnhancedPoster
                 programName={programName}
                 programCategory={programData.category}
@@ -142,10 +126,10 @@ const PosterPage = () => {
                 defaultBackground={programData.stage === "OFF STAGE" ? offStage : onStage}
                 backgroundImage={bg}
               />
-            </div>
+            </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
