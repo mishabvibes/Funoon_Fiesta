@@ -71,7 +71,7 @@ const TeamOverview = () => {
                 <h1 className="p-2 text-2xl md:text-4xl font-extralight text-black">{index + 1}</h1>
               </div>
               <div className="w-full bg-secondary h-full flex p-5 rounded-r-xl py-2 justify-between items-center">
-                <h1 className="text-md md:text-xl lg:text-3xl font-extralight text-black">
+                <h1 className="text-md md:text-xl lg:text-3xl font-light text-black">
                   {team.teamName} <span>({team.totalPoints})</span>
                 </h1>
                 {getMedalIcon(index) && (
