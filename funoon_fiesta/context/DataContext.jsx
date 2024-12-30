@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -12,9 +11,12 @@ export const ResultsProvider = ({ children }) => {
     const [groupPrograms, setGroupPrograms] = useState([]);
     const [singlePrograms, setSinglePrograms] = useState([]);
     const [topSingleParticipants, setTopSingleParticipants] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const fetchResults = async () => {
         try {
+            setLoading(true);
             const response = await axios.get(API);
             if (response.status !== 200) {
                 throw new Error(`Unexpected status: ${response.status}`);
@@ -27,40 +29,54 @@ export const ResultsProvider = ({ children }) => {
 
             setResults(data);
 
+            // Process unique teams
             const teams = [...new Set(data.map(result => 
-                result.teamName ? result.teamName.toUpperCase() : ""))];
+                result.teamName ? result.teamName.toUpperCase() : ""))].filter(Boolean);
             setUniqueTeams(teams);
 
-            const programs = [...new Set(data.map(result => 
-                result.programName ? result.programName.toUpperCase() : ""))];
+            // Get all unique program names
+            const allPrograms = [...new Set(data.map(result => 
+                result.programName ? result.programName.toUpperCase() : ""))].filter(Boolean);
 
-            const groupProgs = programs.filter(program =>
+            // Process programs by category
+            const groupProgs = allPrograms.filter(program =>
                 data.some(result =>
                     result.programName?.toUpperCase() === program &&
-                    result.category?.toUpperCase() === "GROUP"
+                    result.category === "GROUP"
                 )
             );
 
-            const singleProgs = programs.filter(program =>
-                data.filter(result => 
-                    result.programName?.toUpperCase() === program).length === 1
+            const singleProgs = allPrograms.filter(program =>
+                data.some(result =>
+                    result.programName?.toUpperCase() === program &&
+                    result.category === "SINGLE"
+                )
             );
 
-            const generalProgs = programs.filter(program => 
-                !groupProgs.includes(program) && !singleProgs.includes(program)
+            const generalProgs = allPrograms.filter(program =>
+                data.some(result =>
+                    result.programName?.toUpperCase() === program &&
+                    result.category === "GENERAL"
+                )
             );
 
-            setUniquePrograms(generalProgs);
             setGroupPrograms(groupProgs);
             setSinglePrograms(singleProgs);
+            setUniquePrograms(generalProgs);
 
+            // Process top single participants
             const topParticipants = data
-                .filter(result => result.category?.toUpperCase() === "SINGLE")
-                .sort((a, b) => b.points - a.points)
+                .filter(result => result.category === "SINGLE")
+                .sort((a, b) => Number(b.points) - Number(a.points))
                 .slice(0, 3);
             setTopSingleParticipants(topParticipants);
+
+            setError(null);
         } catch (error) {
             console.error("Fetch error:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,31 +86,43 @@ export const ResultsProvider = ({ children }) => {
 
     const deleteResult = async (id) => {
         try {
+            setLoading(true);
             await axios.delete(`${API}/${id}`);
             await fetchResults();
         } catch (error) {
             console.error("Delete error:", error);
+            setError(error.message);
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
     const editResult = async (id, updatedData) => {
         try {
+            setLoading(true);
             await axios.put(`${API}/${id}`, updatedData);
             await fetchResults();
         } catch (error) {
             console.error("Edit error:", error);
+            setError(error.message);
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
     const addResult = async (newData) => {
         try {
+            setLoading(true);
             await axios.post(API, newData);
             await fetchResults();
         } catch (error) {
             console.error("Add error:", error);
+            setError(error.message);
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -108,6 +136,8 @@ export const ResultsProvider = ({ children }) => {
                 groupPrograms,
                 singlePrograms,
                 topSingleParticipants,
+                loading,
+                error,
                 deleteResult,
                 editResult,
                 addResult,
@@ -119,4 +149,10 @@ export const ResultsProvider = ({ children }) => {
     );
 };
 
-export const useResults = () => useContext(ResultsContext);
+export const useResults = () => {
+    const context = useContext(ResultsContext);
+    if (!context) {
+        throw new Error('useResults must be used within a ResultsProvider');
+    }
+    return context;
+};

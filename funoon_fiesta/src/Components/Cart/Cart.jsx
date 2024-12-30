@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useResults } from "../../../context/DataContext";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, Search, Edit2, Trash2, Plus, Filter } from 'lucide-react';
+import { AlertTriangle, Search, Edit2, Trash2, Filter } from 'lucide-react';
 
 const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
                 <div className="p-6">
                     <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 text-red-500">
+                        <div className="w-12 h-12 mx-auto mb-4 text-red-500">
                             <AlertTriangle className="w-full h-full" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Delete {itemName}?</h2>
-                        <p className="text-gray-600 dark:text-gray-300 mb-6">
-                            This action cannot be undone. Are you sure you want to permanently delete this result?
-                        </p>
-                        <div className="flex justify-end space-x-4">
+                        <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">Delete {itemName}?</h2>
+                        <div className="flex justify-end space-x-4 mt-4">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={onConfirm}
-                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
                             >
                                 Delete
                             </button>
@@ -39,8 +36,15 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }) => {
     );
 };
 
-const ResultCard = ({ result, onDelete, onEdit }) => (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+const InfoRow = ({ label, value }) => (
+    <div className="flex justify-between items-center">
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</span>
+        <span className="text-sm text-gray-800 dark:text-gray-200">{value}</span>
+    </div>
+);
+
+const ResultCard = ({ result, onDelete, onEdit, isDeleting }) => (
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 ${isDeleting ? 'opacity-50' : ''}`}>
         <div className="p-4 bg-gray-50 dark:bg-gray-700">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white truncate">
@@ -49,12 +53,14 @@ const ResultCard = ({ result, onDelete, onEdit }) => (
                 <div className="flex space-x-2">
                     <button
                         onClick={() => onEdit(result)}
+                        disabled={isDeleting}
                         className="p-2 text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
                     >
                         <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                         onClick={() => onDelete(result._id)}
+                        disabled={isDeleting}
                         className="p-2 text-gray-600 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
                     >
                         <Trash2 className="w-4 h-4" />
@@ -76,17 +82,15 @@ const ResultCard = ({ result, onDelete, onEdit }) => (
     </div>
 );
 
-const InfoRow = ({ label, value }) => (
-    <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</span>
-        <span className="text-sm text-gray-800 dark:text-gray-200">{value}</span>
-    </div>
-);
-
 const Cart = () => {
     const { results, deleteResult, refreshResults } = useResults();
     const [searchQuery, setSearchQuery] = useState("");
-    const [modalState, setModalState] = useState({ isOpen: false, resultId: null, programName: "" });
+    const [modalState, setModalState] = useState({ 
+        isOpen: false, 
+        resultId: null, 
+        programName: "" 
+    });
+    const [deletingIds, setDeletingIds] = useState(new Set());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -109,9 +113,22 @@ const Cart = () => {
     };
 
     const handleDeleteConfirm = async () => {
-        if (modalState.resultId) {
-            await deleteResult(modalState.resultId);
-            setModalState({ isOpen: false, resultId: null, programName: "" });
+        const { resultId } = modalState;
+        setModalState({ isOpen: false, resultId: null, programName: "" });
+        
+        if (resultId) {
+            try {
+                setDeletingIds(prev => new Set([...prev, resultId]));
+                await deleteResult(resultId);
+            } catch (error) {
+                console.error('Delete failed:', error);
+            } finally {
+                setDeletingIds(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(resultId);
+                    return newSet;
+                });
+            }
         }
     };
 
@@ -131,7 +148,6 @@ const Cart = () => {
                         onClick={() => navigate("/addresult")}
                         className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                     >
-                        {/* <Plus className="w-4 h-4 mr-2" /> */}
                         Add New Result
                     </button>
                 </div>
@@ -147,9 +163,7 @@ const Cart = () => {
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
                         />
                     </div>
-                    <button
-                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors inline-flex items-center"
-                    >
+                    <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors inline-flex items-center">
                         <Filter className="w-4 h-4 mr-2" />
                         Filters
                     </button>
@@ -164,6 +178,7 @@ const Cart = () => {
                             result={result}
                             onDelete={handleDeleteClick}
                             onEdit={handleEdit}
+                            isDeleting={deletingIds.has(result._id)}
                         />
                     ))}
                 </div>

@@ -15,6 +15,12 @@ const ScoreBoard = () => {
   const [activeTeam, setActiveTeam] = useState(null);
   const [expandedSection, setExpandedSection] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [expandedProgram, setExpandedProgram] = useState(null);
+
+  // console.log('Unique Programs:', uniquePrograms);
+  // console.log('Group Programs:', groupPrograms);
+  // console.log('Single Programs:', singlePrograms);
+  // console.log('All Results:', results);
 
   const getTotalPointsForTeam = (team) => {
     const teamResults = results.filter(
@@ -41,11 +47,7 @@ const ScoreBoard = () => {
     const isActive = activeTeam === team;
 
     return (
-      <motion.div
-        variants={fadeIn("up", 0.3)}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: false, amount: 0.7 }}
+      <div
         onClick={() => { setActiveTeam(isActive ? null : team), setSelectedTeam(team) }}
         className={`${isActive ? 'ring-0' : ''
           } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4  hover:shadow-xl cursor-pointer`}
@@ -87,230 +89,200 @@ const ScoreBoard = () => {
             <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'rotate-90' : ''}`} />
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
 
 
 
-  const [expandedProgram, setExpandedProgram] = useState(null);
-
-  // const MobileScoreCard = ({ program, teamResults }) => {
-  //   const isExpanded = expandedProgram === program;
-  //   const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
-  //   const medalCounts = {
-  //     first: teamResults.filter(r => r.prize?.toLowerCase() === 'first').length,
-  //     second: teamResults.filter(r => r.prize?.toLowerCase() === 'second').length,
-  //     third: teamResults.filter(r => r.prize?.toLowerCase() === 'third').length,
-  //   };
-
-  //   return (
-  //     <motion.div
-  //       initial={false}
-  //       animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
-  //       className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
-  //     >
-  //       <div
-  //         className={`flex justify-between items-center p-4 cursor-pointer transition-all duration-300 
-  //           ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
-  //         onClick={() => setExpandedProgram(isExpanded ? null : program)}
-  //       >
-  //         <div className="flex items-center space-x-3">
-  //           <Trophy className={`w-5 h-5 transition-colors duration-300 
-  //             ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
-  //           <div className="flex flex-col">
-  //             <span className={`font-semibold transition-colors duration-300 
-  //               ${isExpanded ? 'text-secondery' : ''}`}>
-  //               {program}
-  //             </span>
-  //             <div className="flex items-center space-x-2 text-sm text-gray-500">
-  //             </div>
-  //           </div>
-  //         </div>
-  //         <div className="flex items-center space-x-2">
-  //           <ChevronRight 
-  //             className={`w-5 h-5 transition-all duration-300 
-  //               ${isExpanded ? 'rotate-90 text-secondery' : 'text-gray-400'}`} 
-  //           />
-  //         </div>
-  //       </div>
-
-  //       <motion.div
-  //         initial={false}
-  //         animate={{
-  //           height: isExpanded ? 'auto' : 0,
-  //           opacity: isExpanded ? 1 : 0
-  //         }}
-  //         transition={{
-  //           duration: 0.3,
-  //           ease: "easeInOut"
-  //         }}
-  //         className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
-  //       >
-  //         {teamNames.map((team, index) => {
-  //           const result = teamResults.find(r => r.teamName.toUpperCase() === team);
-  //           if (!result) return null;
-
-  //           return (
-  //             <motion.div
-  //               initial={{ opacity: 0, x: -20 }}
-  //               animate={{ opacity: 1, x: 0 }}
-  //               transition={{ delay: index * 0.1 }}
-  //               key={team}
-  //               className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
-  //                 flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 
-  //                 transition-colors duration-200"
-  //             >
-  //               <div className="flex items-center space-x-2">
-  //                 <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
-  //               </div>
-  //               <div className="flex items-center space-x-3">
-  //                 <span className="font-semibold text-gray-900 dark:text-gray-100">
-  //                   {result.points}
-  //                 </span>
-  //                 {result.prize && (
-  //                   <span className="text-lg transform hover:scale-110 transition-transform">
-  //                     {result.prize.toLowerCase() === 'first' && '🥇'}
-  //                     {result.prize.toLowerCase() === 'second' && '🥈'}
-  //                     {result.prize.toLowerCase() === 'third' && '🥉'}
-  //                   </span>
-  //                 )}
-  //               </div>
-  //             </motion.div>
-  //           );
-  //         })}
-  //       </motion.div>
-  //     </motion.div>
-  //   );
-  // };
 
 
-  
 
-const MobileScoreCard = ({ program, teamResults }) => {
-  const isExpanded = expandedProgram === program;
-  const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
+  const MobileScoreCard = ({ program, teamResults }) => {
+    const isExpanded = expandedProgram === program;
+    const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
 
-  return (
-    <motion.div
-      initial={false}
-      animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
-      className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
-    >
-      {/* Header remains the same */}
-      <div
-        className={`flex justify-between items-center p-4 cursor-pointer ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-          }`}
-        onClick={() => setExpandedProgram(isExpanded ? null : program)}
+    return (
+      <motion.div
+        initial={false}
+        animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
+        className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
       >
-        <div className="flex items-center space-x-3">
-          <Trophy className={`w-5 h-5 transition-colors duration-300 
+        {/* Header remains the same */}
+        <div
+          className={`flex justify-between items-center p-4 cursor-pointer ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          onClick={() => setExpandedProgram(isExpanded ? null : program)}
+        >
+          <div className="flex items-center space-x-3">
+            <Trophy className={`w-5 h-5 transition-colors duration-300 
              ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
-          <div className="flex flex-col">
-            <span className={`font-semibold transition-colors duration-300 
+            <div className="flex flex-col">
+              <span className={`font-semibold transition-colors duration-300 
                ${isExpanded ? 'text-secondery' : ''}`}>
-              {program}
-            </span>
-            <div className="flex items-center space-x-2 text-sm text-gray-500">
+                {program}
+              </span>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <motion.div
-        initial={false}
-        animate={{
-          height: isExpanded ? 'auto' : 0,
-          opacity: isExpanded ? 1 : 0
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
-      >
-        {teamNames.map((team, index) => {
-          const teamResults = results.filter(r =>
-            r.teamName.toUpperCase() === team &&
-            r.programName.toUpperCase() === program.toUpperCase()
-          );
+        <motion.div
+          initial={false}
+          animate={{
+            height: isExpanded ? 'auto' : 0,
+            opacity: isExpanded ? 1 : 0
+          }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
+        >
+          {teamNames.map((team, index) => {
+            const teamResults = results.filter(r =>
+              r.teamName.toUpperCase() === team &&
+              r.programName.toUpperCase() === program.toUpperCase()
+            );
 
-          if (teamResults.length === 0) return null;
+            if (teamResults.length === 0) return null;
 
-          return (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              key={team}
-              className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
+            return (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                key={team}
+                className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
                 flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <div className="flex items-center space-x-2">
-                <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="flex flex-col items-end gap-1">
-                  {teamResults.map((result, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900 dark:text-gray-100">
-                        {result.points}
-                      </span>
-                      {result.prize && (
-                        <span className="text-lg transform hover:scale-110 transition-transform">
-                          {result.prize.toLowerCase() === 'first' && '🥇'}
-                          {result.prize.toLowerCase() === 'second' && '🥈'}
-                          {result.prize.toLowerCase() === 'third' && '🥉'}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+                <div className="flex items-center space-x-3">
+                  <div className="flex flex-col items-end gap-1">
+                    {teamResults.map((result, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">
+                          {result.points}
+                        </span>
+                        {result.prize && (
+                          <span className="text-lg transform hover:scale-110 transition-transform">
+                            {result.prize.toLowerCase() === 'first' && '🥇'}
+                            {result.prize.toLowerCase() === 'second' && '🥈'}
+                            {result.prize.toLowerCase() === 'third' && '🥉'}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </motion.div>
+    );
+  };
+
+ const renderMobileView = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, ease: "easeOut" }}
+    className="space-y-6"
+  >
+    {/* Team Cards */}
+    <motion.div
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        show: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+          },
+        },
+      }}
+      className="grid grid-cols-2 gap-4"
+    >
+      {teamNames.map((team) => (
+        <motion.div
+          key={team}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0 },
+          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <TeamCard team={team} />
+        </motion.div>
+      ))}
     </motion.div>
-  );
-};
 
-  const renderMobileView = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        {teamNames.map(team => (
-          <TeamCard key={team} team={team} />
-        ))}
-      </div>
+    {/* Program Sections */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-4"
+    >
+      {[
+        { title: 'Single Programs', programs: singlePrograms },
+        { title: 'Group Programs', programs: uniquePrograms },
+        { title: 'Unique Programs', programs: groupPrograms },
+      ].map(({ title, programs }) => (
+        <motion.div
+          key={title}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-2"
+        >
+          <motion.button
+            onClick={() => setExpandedSection(expandedSection === title ? null : title)}
+            className="w-full flex justify-between items-center p-4 bg-gradient-to-r from-secondery to-red-800 rounded-lg text-white font-semibold"
+            whileHover={{ scale: 1.02 }}
+          >
+            <span>{title}</span>
+            <ChevronRight
+              className={`w-5 h-5 transition-transform duration-300 ${
+                expandedSection === title ? 'rotate-90' : ''
+              }`}
+            />
+          </motion.button>
 
-      <div className="space-y-4">
-        {['Single Programs', 'Group Programs'].map(section => (
-          <div key={section} className="space-y-2">
-            <button
-              onClick={() => setExpandedSection(expandedSection === section ? null : section)}
-              className="w-full flex justify-between items-center p-4 bg-gradient-to-r from-secondery to-red-800 rounded-lg text-white font-semibold"
-            >
-              <span>{section}</span>
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${expandedSection === section ? 'rotate-90' : ''}`} />
-            </button>
-
-            <div className={`transition-all duration-500 ${expandedSection === section ? 'opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
-              {(section === 'Single Programs' ? uniquePrograms : groupPrograms).map(program => {
-                const programResults = results.filter(
-                  result => result.programName.toUpperCase() === program.toUpperCase()
-                );
-                return (
-                  <MobileScoreCard
-                    key={program}
-                    program={program}
-                    teamResults={programResults}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+          <motion.div
+            initial={false}
+            animate={{
+              height: expandedSection === title ? "auto" : 0,
+              opacity: expandedSection === title ? 1 : 0,
+            }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            {programs.map((program) => {
+              const programResults = results.filter(
+                (result) => result.programName.toUpperCase() === program.toUpperCase()
+              );
+              return (
+                <MobileScoreCard
+                  key={program}
+                  program={program}
+                  teamResults={programResults}
+                />
+              );
+            })}
+          </motion.div>
+        </motion.div>
+      ))}
+    </motion.div>
+  </motion.div>
+);
 
   const renderDesktopView = () => (
     <div className="overflow-x-auto shadow-lg rounded-lg bg-white dark:bg-gray-800">
