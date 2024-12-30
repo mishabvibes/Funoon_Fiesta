@@ -14,6 +14,15 @@ export default {
       fontFamily: {
         sans: ['Nexa', 'sans-serif'],
       },
+      keyframes: {
+        bounce: {
+          '0%, 75%, 100%': { transform: 'translateY(0)' },
+          '25%': { transform: 'translateY(-20px)' },
+        },
+      },
+      animation: {
+        bounce: 'bounce 1s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
