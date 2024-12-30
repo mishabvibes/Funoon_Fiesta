@@ -113,7 +113,7 @@ const PosterPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 w-full">
           {posterBackgrounds.map((bg, index) => (
             <motion.div
-              variants={fadeIn("up", 0.3)}
+              variants={fadeIn("down", 0.3)}
               initial="hidden"
               whileInView="show"
               viewport={{ once: false, amount: 0.7 }}

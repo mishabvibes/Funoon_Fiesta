@@ -3,6 +3,12 @@ import { useResults } from "../../../context/DataContext";
 import { Trophy, Medal, ChevronRight, Award, Star, TrendingUp } from "lucide-react";
 import TeamAchievements from '../TeamAchievements/TeamAchievements';
 
+// motion
+import { motion } from 'framer-motion'
+// variants
+import { fadeIn } from '../FrameMotion/variants'
+
+
 const ScoreBoard = () => {
   const { results, uniquePrograms, groupPrograms, singlePrograms } = useResults();
   const teamNames = ["ALEXANDRIA", "SHATIBIYA", "MADIYA", "SHAMIYA", "IJAZIYYA", "KAZIMIYYA"];
@@ -35,23 +41,25 @@ const ScoreBoard = () => {
     const isActive = activeTeam === team;
 
     return (
-      // <div
-      //   onClick={() => setSelectedTeam(team)}
-      //   className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 transform transition-all duration-300 hover:shadow-xl cursor-pointer"
-      // >
-        <div
+        <motion.div
+        variants={fadeIn("up", 0.3)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: false, amount: 0.7 }}
           onClick={() => {setActiveTeam(isActive ? null : team) , setSelectedTeam(team)}}
           className={`${isActive ? 'ring-0' : ''
-            } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4 transform transition-all duration-300 hover:shadow-xl cursor-pointer`}
+            } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4  hover:shadow-xl cursor-pointer`}
         >
-          <div className="flex flex-col space-y-2">
+          <div 
+          
+          className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+              <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
                 {team}
               </h3>
               <div className="flex items-center space-x-1">
                 <TrendingUp className="w-4 h-4 text-green-500" />
-                <span className="text-sm font-semibold text-green-500">{totalPoints}</span>
+                <span className="text-sm font-medium text-green-500">{totalPoints}</span>
               </div>
             </div>
 
@@ -79,52 +87,104 @@ const ScoreBoard = () => {
               <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'rotate-90' : ''}`} />
             </div>
           </div>
-        </div>
-      // </div>
+        </motion.div>
     );
   };
 
-  const MobileScoreCard = ({ program, teamResults }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
 
-    return (
-      <div className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden">
-        <div
-          className="flex justify-between items-center p-4 cursor-pointer"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          <div className="flex items-center space-x-2">
-            <Trophy className="w-5 h-5 text-secondery" />
-            <span className="font-semibold">{program}</span>
+  
+
+const [expandedProgram, setExpandedProgram] = useState(null);
+
+const MobileScoreCard = ({ program, teamResults }) => {
+  const isExpanded = expandedProgram === program;
+  const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
+  const medalCounts = {
+    first: teamResults.filter(r => r.prize?.toLowerCase() === 'first').length,
+    second: teamResults.filter(r => r.prize?.toLowerCase() === 'second').length,
+    third: teamResults.filter(r => r.prize?.toLowerCase() === 'third').length,
+  };
+
+  return (
+    <motion.div
+      initial={false}
+      animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
+      className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
+    >
+      <div
+        className={`flex justify-between items-center p-4 cursor-pointer transition-all duration-300 
+          ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+        onClick={() => setExpandedProgram(isExpanded ? null : program)}
+      >
+        <div className="flex items-center space-x-3">
+          <Trophy className={`w-5 h-5 transition-colors duration-300 
+            ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
+          <div className="flex flex-col">
+            <span className={`font-semibold transition-colors duration-300 
+              ${isExpanded ? 'text-secondery' : ''}`}>
+              {program}
+            </span>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+            </div>
           </div>
-          <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
         </div>
-
-        <div className={`transition-all duration-300 ${isExpanded ? 'max-h-96' : 'max-h-0'} overflow-hidden`}>
-          {teamNames.map(team => {
-            const result = teamResults.find(r => r.teamName.toUpperCase() === team);
-            if (!result) return null;
-
-            return (
-              <div key={team} className="px-4 py-2 border-t flex justify-between items-center">
-                <span className="font-medium">{team}</span>
-                <div className="flex items-center space-x-2">
-                  <span>{result.points}</span>
-                  {result.prize && (
-                    <span className="text-lg">
-                      {result.prize.toLowerCase() === 'first' && '🥇'}
-                      {result.prize.toLowerCase() === 'second' && '🥈'}
-                      {result.prize.toLowerCase() === 'third' && '🥉'}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex items-center space-x-2">
+          <ChevronRight 
+            className={`w-5 h-5 transition-all duration-300 
+              ${isExpanded ? 'rotate-90 text-secondery' : 'text-gray-400'}`} 
+          />
         </div>
       </div>
-    );
-  };
+
+      <motion.div
+        initial={false}
+        animate={{
+          height: isExpanded ? 'auto' : 0,
+          opacity: isExpanded ? 1 : 0
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut"
+        }}
+        className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
+      >
+        {teamNames.map((team, index) => {
+          const result = teamResults.find(r => r.teamName.toUpperCase() === team);
+          if (!result) return null;
+
+          return (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              key={team}
+              className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 
+                flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 
+                transition-colors duration-200"
+            >
+              <div className="flex items-center space-x-2">
+                <span className="font-medium text-gray-700 dark:text-gray-300">{team}</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {result.points}
+                </span>
+                {result.prize && (
+                  <span className="text-lg transform hover:scale-110 transition-transform">
+                    {result.prize.toLowerCase() === 'first' && '🥇'}
+                    {result.prize.toLowerCase() === 'second' && '🥈'}
+                    {result.prize.toLowerCase() === 'third' && '🥉'}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    </motion.div>
+  );
+};
+
 
   const renderMobileView = () => (
     <div className="space-y-6">
@@ -145,7 +205,7 @@ const ScoreBoard = () => {
               <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${expandedSection === section ? 'rotate-90' : ''}`} />
             </button>
 
-            <div className={`transition-all duration-500 ${expandedSection === section ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+            <div className={`transition-all duration-500 ${expandedSection === section ? 'opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
               {(section === 'Single Programs' ? uniquePrograms : groupPrograms).map(program => {
                 const programResults = results.filter(
                   result => result.programName.toUpperCase() === program.toUpperCase()
@@ -226,7 +286,7 @@ const ScoreBoard = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-12 px-12">
       {selectedTeam ? (
         <TeamAchievements
           teamName={selectedTeam}
@@ -256,28 +316,6 @@ const ScoreBoard = () => {
         </>
       )}
     </div>
-
-    // <div className="container mx-auto px-4 py-8">
-    //   <div className="flex flex-col items-center mb-8 space-y-6">
-    //     <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 text-center">
-    //       <span className="flex items-center justify-center space-x-3">
-    //         <Medal className="w-8 h-8 text-blue-500" />
-    //         <span>SCOREBOARD</span>
-    //         <Medal className="w-8 h-8 text-blue-500" />
-    //       </span>
-    //     </h1>
-    //   </div>
-
-    //   {/* Mobile view */}
-    //   <div className="md:hidden">
-    //     {renderMobileView()}
-    //   </div>
-
-    //   {/* Desktop view */}
-    //   <div className="hidden md:block">
-    //     {renderDesktopView()}
-    //   </div>
-    // </div>
   );
 };
 
