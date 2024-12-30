@@ -1,7 +1,7 @@
 import React from 'react';
 import first from '../../assets/img/medals/medal1.png';
-import second from '../../assets/img/medals/medal2.png';
-import third from '../../assets/img/medals/medal3.png';
+import third from '../../assets/img/medals/medal2.png';
+import second from '../../assets/img/medals/medal3.png';
 import HomePattern from '../../assets/img/pattern-01.png';
 import { motion } from 'framer-motion';
 import { fadeIn } from '../FrameMotion/variants';

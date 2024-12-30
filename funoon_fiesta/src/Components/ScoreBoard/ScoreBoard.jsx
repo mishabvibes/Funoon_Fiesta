@@ -5,7 +5,7 @@ import TeamAchievements from '../TeamAchievements/TeamAchievements';
 
 const ScoreBoard = () => {
   const { results, uniquePrograms, groupPrograms, singlePrograms } = useResults();
-  const teamNames = ["KAMAR", "HILAL", "HIJAS", "LULU", "HAIKI", "MARAM"];
+  const teamNames = ["ALEXANDRIA", "SHATIBIYA", "MADIYA", "SHAMIYA", "IJAZIYYA", "KAZIMIYYA"];
   const [activeTeam, setActiveTeam] = useState(null);
   const [expandedSection, setExpandedSection] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);

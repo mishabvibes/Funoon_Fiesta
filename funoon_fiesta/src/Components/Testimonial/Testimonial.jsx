@@ -16,6 +16,30 @@ const Testimonial = () => {
             testimonial_name: 'Emily Rose',
             text_block: 'Project Manager, Buildify',
         },
+        {
+            img: image2,
+            content_text: "This platform has revolutionized how we manage our projects. It's fast, reliable, and easy to use.",
+            testimonial_name: 'Emily Rose',
+            text_block: 'Project Manager, Buildify',
+        },
+        {
+            img: image3,
+            content_text: "This platform has revolutionized how we manage our projects. It's fast, reliable, and easy to use.",
+            testimonial_name: 'Emily Rose',
+            text_block: 'Project Manager, Buildify',
+        },
+        {
+            img: image4,
+            content_text: "This platform has revolutionized how we manage our projects. It's fast, reliable, and easy to use.",
+            testimonial_name: 'Emily Rose',
+            text_block: 'Project Manager, Buildify',
+        },
+        {
+            img: image5,
+            content_text: "This platform has revolutionized how we manage our projects. It's fast, reliable, and easy to use.",
+            testimonial_name: 'Emily Rose',
+            text_block: 'Project Manager, Buildify',
+        },
         // ... other testimonials
     ];
     
