@@ -286,7 +286,7 @@ const MobileScoreCard = ({ program, teamResults }) => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-12 px-12">
+    <div className="container mx-auto px-4 py-12 md:px-12">
       {selectedTeam ? (
         <TeamAchievements
           teamName={selectedTeam}
