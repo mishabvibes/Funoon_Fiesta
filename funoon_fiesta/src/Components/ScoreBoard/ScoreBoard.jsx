@@ -233,7 +233,7 @@ const ScoreBoard = () => {
     >
       {[
         { title: 'Single Programs', programs: singlePrograms },
-        { title: 'Group Programs', programs: uniquePrograms },
+        { title: 'Genaral Programs', programs: uniquePrograms },
         { title: 'Unique Programs', programs: groupPrograms },
       ].map(({ title, programs }) => (
         <motion.div

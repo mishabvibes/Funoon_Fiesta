@@ -52,11 +52,11 @@ const About = () => {
                 Funoon Fiesta
               </h1>
               <p className="mt-4 text-base lg:text-lg leading-relaxed">
-                Embark on a continuous journey of creativity, where art flows 
-                endlessly and inspiration knows no bounds. Our carousel represents 
-                the infinite potential of artistic expression.Embark on a continuous journey of creativity, where art flows 
-                endlessly and inspiration knows no bounds. Our carousel represents 
-                the infinite potential of artistic expression.
+              The new society tries to break the Islamic cultures and live according to 
+              the new rational thinking freely without rules and regulations.  
+              The world is preparing an opportunity for that.  But the true believer 
+              who lives without giving up Islamic values ​​in any crisis presents the moral 
+              and cultural values ​​of the believer to the world through Funun Fiesta.
               </p>
             </div>
           </motion.section>
