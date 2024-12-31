@@ -67,7 +67,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-[90vh] bg-gradient-to-br flex items-center justify-center px-4 py-6">
-      <div className="w-full max-w-md bg-white dark:bg-transparent shadow-2xl dark:shadow-transparent rounded-2xl overflow-hidden">
+      <div className="w-full max-w-md bg-white dark:bg-[#2D2D2D] shadow-2xl dark:shadow-transparent rounded-2xl overflow-hidden">
         <div className="p-8 space-y-6">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-2">
@@ -99,7 +99,7 @@ const AdminLogin = () => {
                   setError('');
                 }}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg 
-                  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-transparent
                   transition duration-300 ease-in-out"
                 required
               />
@@ -118,7 +118,7 @@ const AdminLogin = () => {
                   setError('');
                 }}
                 className="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg 
-                  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-transparent
                   transition duration-300 ease-in-out"
                 required
               />
@@ -133,23 +133,14 @@ const AdminLogin = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 dark:bg-blue-700 text-white py-3 rounded-lg 
-                hover:bg-blue-700 dark:hover:bg-blue-800 transition duration-300 
+              className="w-full bg-secondery dark:bg-secondery text-white py-3 rounded-lg 
+                hover:bg-red-700 dark:hover:bg-red-800 transition duration-300 
                 transform hover:-translate-y-1 shadow-lg hover:shadow-xl 
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
             >
               Log In
             </button>
           </form>
-
-          <div className="text-center">
-            <a 
-              href="#" 
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              Forgot Password?
-            </a>
-          </div>
         </div>
       </div>
     </div>

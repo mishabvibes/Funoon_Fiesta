@@ -285,7 +285,7 @@ const ScoreBoard = () => {
 );
 
   const renderDesktopView = () => (
-    <div className="overflow-x-auto shadow-lg rounded-lg bg-white dark:bg-gray-800">
+    <div className="overflow-x-auto rounded-lg bg-white dark:bg-transparent border border-white dark:border-[#2D2D2D] shadow-lg ">
       <table className="table-auto w-full border-collapse text-sm sm:text-base">
         <thead>
           <tr className="bg-gradient-to-r from-secondery to-red-800 text-white">

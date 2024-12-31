@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Crown } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import EnhancedPoster from './WinnerPoster';
 import { useResults } from '../../../context/DataContext';
@@ -21,6 +21,19 @@ const PosterPage = () => {
   });
 
   const posterBackgrounds = [img, img1, img2];
+
+  const getMedalEmoji = (index) => {
+    switch (index) {
+      case 0:
+        return "🥇";
+      case 1:
+        return "🥈";
+      case 2:
+        return "🥉";
+      default:
+        return "🏅";
+    }
+  };
 
   useEffect(() => {
     if (results.length > 0 && programName) {
@@ -103,8 +116,12 @@ const PosterPage = () => {
                   whileHover={{ scale: 1.05 }}
                   className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 w-full md:w-auto"
                 >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${index === 0 ? 'bg-yellow-400' : index === 1 ? 'bg-gray-400' : 'bg-amber-600'}`}>
-                    <Crown className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    index === 0 ? 'shadow-lg' : 
+                    index === 1 ? 'shadow-lg' : 
+                    'shadow-lg'}`}
+                  >
+                    <span className="text-4xl">{getMedalEmoji(index)}</span>
                   </div>
                   <div>
                     <h2 className="text-gray-900 dark:text-white font-bold text-lg">
