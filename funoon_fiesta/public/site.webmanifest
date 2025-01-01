@@ -1,23 +1,32 @@
 {
-    "name": "Funoon Fiesta",
+    "name": "Funoon Fiesta Art Festival",
     "short_name": "Funoon",
-    "description": "Funoon Fiesta Art Fest Result Management",
+    "description": "Manage and track art festival results in real-time with Funoon Fiesta's comprehensive festival management system",
+    "categories": ["entertainment", "education", "art"],
     "icons": [
       {
         "src": "/android-chrome-192x192.png",
         "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "/android-chrome-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
+        "type": "image/png",
+        "purpose": "any"
       },
       {
         "src": "/android-chrome-512x512.png",
         "sizes": "512x512",
         "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/maskable-icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
         "purpose": "maskable"
+      },
+      {
+        "src": "/monochrome-icon.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "monochrome"
       },
       {
         "src": "/apple-touch-icon.png",
@@ -25,10 +34,36 @@
         "type": "image/png"
       }
     ],
-    "theme_color": "#f5f0ec",
+    "theme_color": "#6366f1",
     "background_color": "#f5f0ec",
-    "start_url": "/",
+    "start_url": "/?source=pwa",
     "display": "standalone",
     "orientation": "portrait",
-    "scope": "/"
+    "scope": "/",
+    "shortcuts": [
+      {
+        "name": "View Results",
+        "short_name": "Results",
+        "description": "Check latest festival results",
+        "url": "/results",
+        "icons": [{ "src": "/icons/results.png", "sizes": "96x96" }]
+      },
+      {
+        "name": "Schedule",
+        "short_name": "Schedule",
+        "description": "View festival schedule",
+        "url": "/schedule",
+        "icons": [{ "src": "/icons/schedule.png", "sizes": "96x96" }]
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "/screenshots/home.png",
+        "sizes": "1280x720",
+        "type": "image/png",
+        "platform": "wide"
+      }
+    ],
+    "prefer_related_applications": false,
+    "display_override": ["window-controls-overlay"]
   }

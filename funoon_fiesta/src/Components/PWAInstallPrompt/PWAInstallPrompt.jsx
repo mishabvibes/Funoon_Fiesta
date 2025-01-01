@@ -129,7 +129,7 @@ const PWAInstallPrompt = () => {
                    whileHover={{ scale: 1.05 }}
                    whileTap={{ scale: 0.95 }}
                    onClick={handleInstallClick}
-                   className="px-6 py-3 bg-secondery text-white rounded-lg font-medium shadow-lg hover:bg-opacity-90 transition-all"
+                   className="px-6 py-3 bg-secondery rounded-lg font-medium shadow-lg hover:bg-opacity-90 transition-all"
                  >
                    Install Now
                  </motion.button>
@@ -137,7 +137,7 @@ const PWAInstallPrompt = () => {
                    whileHover={{ scale: 1.05 }}
                    whileTap={{ scale: 0.95 }}
                    onClick={() => setShowPrompt(false)}
-                   className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                   className="px-6 py-3 border border-gray-300 rounded-lg text-black font-medium hover:bg-gray-50 transition-all"
                  >
                    Maybe Later
                  </motion.button>
