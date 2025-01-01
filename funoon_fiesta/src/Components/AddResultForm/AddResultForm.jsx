@@ -187,8 +187,8 @@ const AddResultForm = () => {
           {['studentName', 'programName'].map(field => (
             <div key={field} className="relative">
               {field === 'studentName' ? 
-                <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" /> :
-                <Clipboard className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-3 w-5 h-5 " /> :
+                <Clipboard className="absolute left-3 top-3 w-5 h-5 " />
               }
               <input
                 type="text"
@@ -211,7 +211,9 @@ const AddResultForm = () => {
                 value={formData[field.name]}
                 onChange={handleChange}
                 required
-                className="w-full pl-10 pr-4 py-3 border text-gray-400 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
+                className={`w-full pl-10 pr-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none ${
+                  formData[field.name] ? 'text-black' : 'text-gray-400 dark:text-gray-600'
+                }`}
               >
                 <option value="">{`Select ${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}</option>
                 {field.options.map(option => (

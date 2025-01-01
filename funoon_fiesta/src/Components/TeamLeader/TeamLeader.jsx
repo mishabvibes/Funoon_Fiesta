@@ -16,7 +16,7 @@ const TeamLeader = () => {
   const teamLeaders = [
     { 
       id: 1, 
-      name: "Michael Chen", 
+      name: <>Michael Chen && <p/> Michael Chen</>,
       role: "CEO",
       image: img1,
     },
