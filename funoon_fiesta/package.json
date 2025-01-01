@@ -27,7 +27,8 @@
     "react-scroll": "^1.9.0",
     "react-scroll-parallax": "^3.4.5",
     "react-toastify": "^11.0.2",
-    "swiper": "^11.1.15"
+    "swiper": "^11.1.15",
+    "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
