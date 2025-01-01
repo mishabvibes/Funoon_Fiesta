@@ -211,7 +211,7 @@ const AddResultForm = () => {
                 value={formData[field.name]}
                 onChange={handleChange}
                 required
-                className="w-full pl-10 pr-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
+                className="w-full pl-10 pr-4 py-3 border text-gray-400 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none"
               >
                 <option value="">{`Select ${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}</option>
                 {field.options.map(option => (
