@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useResults } from "../../../context/DataContext";
 import { Trophy, Medal, ChevronRight, Award, Star, TrendingUp } from "lucide-react";
 import TeamAchievements from '../TeamAchievements/TeamAchievements';
-
-// motion
-import { motion } from 'framer-motion'
-// variants
-import { fadeIn } from '../FrameMotion/variants'
-
+import { motion } from 'framer-motion';
 
 const ScoreBoard = () => {
   const { results, uniquePrograms, groupPrograms, singlePrograms } = useResults();
@@ -16,21 +11,63 @@ const ScoreBoard = () => {
   const [expandedSection, setExpandedSection] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [expandedProgram, setExpandedProgram] = useState(null);
+  const [localResults, setLocalResults] = useState([]);
+  const [localPrograms, setLocalPrograms] = useState({
+    unique: [],
+    group: [],
+    single: []
+  });
 
-  // console.log('Unique Programs:', uniquePrograms);
-  // console.log('Group Programs:', groupPrograms);
-  // console.log('Single Programs:', singlePrograms);
-  // console.log('All Results:', results);
+  // Load data from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedResults = localStorage.getItem('scoreboardResults');
+      const savedPrograms = localStorage.getItem('scoreboardPrograms');
+
+      if (savedResults) {
+        setLocalResults(JSON.parse(savedResults));
+      }
+      if (savedPrograms) {
+        setLocalPrograms(JSON.parse(savedPrograms));
+      }
+    } catch (error) {
+      console.error('Error loading local data:', error);
+    }
+  }, []);
+
+  // Save data to localStorage when it changes
+  useEffect(() => {
+    if (results?.length > 0) {
+      try {
+        localStorage.setItem('scoreboardResults', JSON.stringify(results));
+        localStorage.setItem('scoreboardPrograms', JSON.stringify({
+          unique: uniquePrograms,
+          group: groupPrograms,
+          single: singlePrograms
+        }));
+      } catch (error) {
+        console.error('Error saving to localStorage:', error);
+      }
+    }
+  }, [results, uniquePrograms, groupPrograms, singlePrograms]);
+
+  // Use local data if online data is not available
+  const effectiveResults = results?.length > 0 ? results : localResults;
+  const effectivePrograms = {
+    unique: uniquePrograms?.length > 0 ? uniquePrograms : localPrograms.unique,
+    group: groupPrograms?.length > 0 ? groupPrograms : localPrograms.group,
+    single: singlePrograms?.length > 0 ? singlePrograms : localPrograms.single
+  };
 
   const getTotalPointsForTeam = (team) => {
-    const teamResults = results.filter(
+    const teamResults = effectiveResults.filter(
       (result) => result.teamName.toUpperCase() === team
     );
     return teamResults.reduce((total, curr) => total + curr.points, 0);
   };
 
   const getMedalCount = (team) => {
-    const teamResults = results.filter(
+    const teamResults = effectiveResults.filter(
       (result) => result.teamName.toUpperCase() === team
     );
     return {
@@ -48,13 +85,11 @@ const ScoreBoard = () => {
 
     return (
       <div
-        onClick={() => { setActiveTeam(isActive ? null : team), setSelectedTeam(team) }}
+        onClick={() => { setActiveTeam(isActive ? null : team); setSelectedTeam(team); }}
         className={`${isActive ? 'ring-0' : ''
-          } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4  hover:shadow-xl cursor-pointer`}
+          } bg-white dark:bg-[#2D2D2D] rounded-xl shadow-lg p-4 hover:shadow-xl cursor-pointer`}
       >
-        <div
-
-          className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">
               {team}
@@ -93,15 +128,8 @@ const ScoreBoard = () => {
     );
   };
 
-
-
-
-
-
-
   const MobileScoreCard = ({ program, teamResults }) => {
     const isExpanded = expandedProgram === program;
-    const totalPoints = teamResults.reduce((sum, result) => sum + result.points, 0);
 
     return (
       <motion.div
@@ -109,22 +137,20 @@ const ScoreBoard = () => {
         animate={{ backgroundColor: isExpanded ? 'rgba(255, 255, 255, 0.05)' : 'transparent' }}
         className="bg-white dark:bg-[#2D2D2D] rounded-lg shadow-md mb-4 overflow-hidden"
       >
-        {/* Header remains the same */}
         <div
-          className={`flex justify-between items-center p-4 cursor-pointer ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+          className={`flex justify-between items-center p-4 cursor-pointer ${isExpanded ? 'bg-gradient-to-r from-secondery/10 to-red-800/10' :
+              'hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
           onClick={() => setExpandedProgram(isExpanded ? null : program)}
         >
           <div className="flex items-center space-x-3">
-            <Trophy className={`w-5 h-5 transition-colors duration-300 
-             ${isExpanded ? 'text-secondery' : 'text-gray-400'}`} />
+            <Trophy className={`w-5 h-5 transition-colors duration-300 ${isExpanded ? 'text-secondery' : 'text-gray-400'
+              }`} />
             <div className="flex flex-col">
-              <span className={`font-semibold transition-colors duration-300 
-               ${isExpanded ? 'text-secondery' : ''}`}>
+              <span className={`font-semibold transition-colors duration-300 ${isExpanded ? 'text-secondery' : ''
+                }`}>
                 {program}
               </span>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-              </div>
             </div>
           </div>
         </div>
@@ -139,7 +165,7 @@ const ScoreBoard = () => {
           className="overflow-hidden bg-gray-50 dark:bg-[#2D2D2D]"
         >
           {teamNames.map((team, index) => {
-            const teamResults = results.filter(r =>
+            const teamResults = effectiveResults.filter(r =>
               r.teamName.toUpperCase() === team &&
               r.programName.toUpperCase() === program.toUpperCase()
             );
@@ -184,108 +210,105 @@ const ScoreBoard = () => {
     );
   };
 
- const renderMobileView = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, ease: "easeOut" }}
-    className="space-y-6"
-  >
-    {/* Team Cards */}
+  const renderMobileView = () => (
     <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        show: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            staggerChildren: 0.1,
-            delayChildren: 0.2,
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="space-y-6"
+    >
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.2,
+            },
           },
-        },
-      }}
-      className="grid grid-cols-2 gap-4"
-    >
-      {teamNames.map((team) => (
-        <motion.div
-          key={team}
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: { opacity: 1, y: 0 },
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <TeamCard team={team} />
-        </motion.div>
-      ))}
-    </motion.div>
-
-    {/* Program Sections */}
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="space-y-4"
-    >
-      {[
-        { title: 'Single Programs', programs: singlePrograms },
-        { title: 'Genaral Programs', programs: uniquePrograms },
-        { title: 'Unique Programs', programs: groupPrograms },
-      ].map(({ title, programs }) => (
-        <motion.div
-          key={title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="space-y-2"
-        >
-          <motion.button
-            onClick={() => setExpandedSection(expandedSection === title ? null : title)}
-            className="w-full flex justify-between items-center p-4 bg-gradient-to-r from-secondery to-red-800 rounded-lg text-white font-semibold"
-            whileHover={{ scale: 1.02 }}
-          >
-            <span>{title}</span>
-            <ChevronRight
-              className={`w-5 h-5 transition-transform duration-300 ${
-                expandedSection === title ? 'rotate-90' : ''
-              }`}
-            />
-          </motion.button>
-
+        }}
+        className="grid grid-cols-2 gap-4"
+      >
+        {teamNames.map((team) => (
           <motion.div
-            initial={false}
-            animate={{
-              height: expandedSection === title ? "auto" : 0,
-              opacity: expandedSection === title ? 1 : 0,
+            key={team}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 },
             }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="overflow-hidden"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {programs.map((program) => {
-              const programResults = results.filter(
-                (result) => result.programName.toUpperCase() === program.toUpperCase()
-              );
-              return (
-                <MobileScoreCard
-                  key={program}
-                  program={program}
-                  teamResults={programResults}
-                />
-              );
-            })}
+            <TeamCard team={team} />
           </motion.div>
-        </motion.div>
-      ))}
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="space-y-4"
+      >
+        {[
+          { title: 'Single Programs', programs: effectivePrograms.single },
+          { title: 'General Programs', programs: effectivePrograms.unique },
+          { title: 'Unique Programs', programs: effectivePrograms.group },
+        ].map(({ title, programs }) => (
+          <motion.div
+            key={title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="space-y-2"
+          >
+            <motion.button
+              onClick={() => setExpandedSection(expandedSection === title ? null : title)}
+              className="w-full flex justify-between items-center p-4 bg-gradient-to-r from-secondery to-red-800 rounded-lg text-white font-semibold"
+              whileHover={{ scale: 1.02 }}
+            >
+              <span>{title}</span>
+              <ChevronRight
+                className={`w-5 h-5 transition-transform duration-300 ${expandedSection === title ? 'rotate-90' : ''
+                  }`}
+              />
+            </motion.button>
+
+            <motion.div
+              initial={false}
+              animate={{
+                height: expandedSection === title ? "auto" : 0,
+                opacity: expandedSection === title ? 1 : 0,
+              }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              {programs.map((program) => {
+                const programResults = effectiveResults.filter(
+                  (result) => result.programName.toUpperCase() === program.toUpperCase()
+                );
+                return (
+                  <MobileScoreCard
+                    key={program}
+                    program={program}
+                    teamResults={programResults}
+                  />
+                );
+              })}
+            </motion.div>
+          </motion.div>
+        ))}
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
 
   const renderDesktopView = () => (
-    <div className="overflow-x-auto rounded-lg bg-white dark:bg-transparent border border-white dark:border-[#2D2D2D] shadow-lg ">
+    <div className="overflow-x-auto rounded-lg bg-white dark:bg-transparent border border-white dark:border-[#2D2D2D] shadow-lg">
       <table className="table-auto w-full border-collapse text-sm sm:text-base">
         <thead>
           <tr className="bg-gradient-to-r from-secondery to-red-800 text-white">
@@ -296,7 +319,7 @@ const ScoreBoard = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {[...singlePrograms, ...uniquePrograms, ...groupPrograms].map(program => (
+          {[...effectivePrograms.single, ...effectivePrograms.unique, ...effectivePrograms.group].map(program => (
             <tr key={program} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
               <td className="px-4 py-3 font-semibold text-blue-600 dark:text-blue-300">
                 <div className="flex items-center space-x-2">
@@ -305,7 +328,7 @@ const ScoreBoard = () => {
                 </div>
               </td>
               {teamNames.map(team => {
-                const teamResults = results.filter(
+                const teamResults = effectiveResults.filter(
                   r => r.programName.toUpperCase() === program.toUpperCase() &&
                     r.teamName.toUpperCase() === team
                 );
@@ -348,12 +371,30 @@ const ScoreBoard = () => {
     </div>
   );
 
+  const NoDataMessage = () => (
+    <div className="text-center py-8">
+      <div className="flex flex-col items-center space-y-4">
+        <Trophy className="w-12 h-12 text-gray-400" />
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+          No Data Available
+        </h3>
+        <p className="text-gray-500 dark:text-gray-400">
+          You are currently offline and no cached data was found.
+        </p>
+      </div>
+    </div>
+  );
+
+  // Check if we have any data to display
+  const hasData = effectiveResults.length > 0;
+
   return (
     <div className="container mx-auto px-4 py-12 md:px-12">
       {selectedTeam ? (
         <TeamAchievements
           teamName={selectedTeam}
           onBack={() => setSelectedTeam(null)}
+          results={effectiveResults}  // Pass the effective results to TeamAchievements
         />
       ) : (
         <>
@@ -367,15 +408,21 @@ const ScoreBoard = () => {
             </h1>
           </div>
 
-          {/* Mobile view */}
-          <div className="md:hidden h-auto">
-            {renderMobileView()}
-          </div>
+          {!hasData ? (
+            <NoDataMessage />
+          ) : (
+            <>
+              {/* Mobile view */}
+              <div className="md:hidden h-auto">
+                {renderMobileView()}
+              </div>
 
-          {/* Desktop view */}
-          <div className="hidden md:block">
-            {renderDesktopView()}
-          </div>
+              {/* Desktop view */}
+              <div className="hidden md:block">
+                {renderDesktopView()}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
@@ -383,15 +430,3 @@ const ScoreBoard = () => {
 };
 
 export default ScoreBoard;
-
-
-
-
-
-
-
-
-
-
-
-

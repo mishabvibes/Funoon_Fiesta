@@ -1,21 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import first from '../../assets/img/medals/medal1.png';
 import third from '../../assets/img/medals/medal2.png';
 import second from '../../assets/img/medals/medal3.png';
 import HomePattern from '../../assets/img/pattern-01.png';
 import { motion } from 'framer-motion';
 import { fadeIn } from '../FrameMotion/variants';
-import { useResults } from '../../../context/DataContext'; // Import the context hook
+import { useResults } from '../../../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 
 const TeamOverview = () => {
-  const { results } = useResults(); // Get results from context
+  const { results } = useResults();
+  const navigate = useNavigate();
 
-  // Calculate total points for each team
+  // Save results to localStorage whenever they change
+  useEffect(() => {
+    if (results && results.length > 0) {
+      localStorage.setItem('teamResults', JSON.stringify(results));
+    }
+  }, [results]);
+
+  // Calculate total points for each team using either context or localStorage
   const calculateTeamPoints = () => {
+    // Try to get data from context first
+    let currentResults = results;
+
+    // If no results in context, try localStorage
+    if (!currentResults || currentResults.length === 0) {
+      const storedResults = localStorage.getItem('teamResults');
+      currentResults = storedResults ? JSON.parse(storedResults) : [];
+    }
+
     const teamPoints = {};
 
-    results.forEach((result) => {
+    currentResults.forEach((result) => {
       const teamName = result.teamName.toUpperCase();
       if (!teamPoints[teamName]) {
         teamPoints[teamName] = 0;
@@ -23,7 +40,6 @@ const TeamOverview = () => {
       teamPoints[teamName] += result.points;
     });
 
-    // Convert to array and sort by points
     return Object.entries(teamPoints)
       .map(([teamName, totalPoints]) => ({
         teamName,
@@ -34,7 +50,6 @@ const TeamOverview = () => {
 
   const teams = calculateTeamPoints();
 
-  // Get medal icons based on position
   const getMedalIcon = (index) => {
     switch (index) {
       case 0:
@@ -48,14 +63,12 @@ const TeamOverview = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleResultRedirect = () => {
-    navigate('/scoretable');  // Replace '/result' with your actual result route
+    navigate('/scoretable');
   };
 
   return (
-    <section className="h-screen w-full flex justify-center flex-col" >
+    <section className="h-screen w-full flex justify-center flex-col">
       <div className="flex justify-center items-center h-full w-full py-8 sm:py-10 md:py-12 flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-4 sm:px-8 md:px-12 md:w-3/4">
           {teams.map((team, index) => (

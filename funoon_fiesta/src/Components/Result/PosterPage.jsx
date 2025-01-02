@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import EnhancedPoster from './WinnerPoster';
 import { useResults } from '../../../context/DataContext';
 import { motion } from 'framer-motion';
-import { fadeIn } from '../FrameMotion/variants';
 import onStage from '../../assets/img/poster.jpeg';
 import offStage from '../../assets/img/poster.jpeg';
 import img from '../../assets/img/poster.jpeg';
@@ -24,14 +23,37 @@ const PosterPage = () => {
 
   const getMedalEmoji = (index) => {
     switch (index) {
-      case 0:
-        return "🥇";
-      case 1:
-        return "🥈";
-      case 2:
-        return "🥉";
-      default:
-        return "🏅";
+      case 0: return "🥇";
+      case 1: return "🥈";
+      case 2: return "🥉";
+      default: return "🏅";
+    }
+  };
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { 
+      opacity: 0,
+      y: 20
+    },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        duration: 0.5,
+        bounce: 0.3
+      }
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
     }
   };
 
@@ -76,21 +98,23 @@ const PosterPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div 
-          variants={fadeIn("down", 0.3)}
+          variants={staggerContainer}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.7 }}
+          animate="show"
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center justify-center gap-2 mb-4">
+          <motion.div 
+            variants={fadeInUp}
+            className="inline-flex items-center justify-center gap-2 mb-4"
+          >
             <Trophy className="w-8 h-8 text-yellow-500" />
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
               {programName} Winners
             </h1>
             <Trophy className="w-8 h-8 text-yellow-500" />
-          </div>
+          </motion.div>
           <motion.p 
-            variants={fadeIn("up", 0.4)}
+            variants={fadeInUp}
             className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
           >
             Celebrating excellence and outstanding achievements in {programName}
@@ -99,10 +123,9 @@ const PosterPage = () => {
 
         {/* Winners Overview */}
         <motion.div 
-          variants={fadeIn("up", 0.5)}
+          variants={staggerContainer}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.7 }}
+          animate="show"
           className="w-full max-w-5xl mx-auto mb-16"
         >
           <div className="bg-gradient-to-r from-yellow-400/20 via-amber-500/20 to-yellow-400/20 rounded-2xl p-8">
@@ -110,11 +133,12 @@ const PosterPage = () => {
               {programWinners.map((winner, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 w-full md:w-auto"
+                  variants={fadeInUp}
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { type: "spring", stiffness: 300, damping: 15 }
+                  }}
+                  className="flex items-center gap-4 bg-white/40 dark:bg-white/10 backdrop-blur-sm rounded-xl p-4 w-full md:w-auto"
                 >
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                     index === 0 ? 'shadow-lg' : 
@@ -139,19 +163,19 @@ const PosterPage = () => {
 
         {/* Posters Grid */}
         <motion.div 
-          variants={fadeIn("up", 0.6)}
+          variants={staggerContainer}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: false, amount: 0.3 }}
+          animate="show"
           className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 w-full"
         >
           {posterBackgrounds.map((bg, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              whileHover={{ scale: 1.02 }}
+              variants={fadeInUp}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300, damping: 15 }
+              }}
               className="flex justify-center"
             >
               <EnhancedPoster
