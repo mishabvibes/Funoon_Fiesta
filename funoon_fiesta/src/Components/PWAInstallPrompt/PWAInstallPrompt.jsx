@@ -1,154 +1,143 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { PhoneIcon, TabletIcon, XIcon, ShareIcon, PlusCircleIcon, BellIcon, ZapIcon } from 'lucide-react';
 
 const PWAInstallPrompt = () => {
- const [deferredPrompt, setDeferredPrompt] = useState(null);
- const [showPrompt, setShowPrompt] = useState(false);
- const [isIOS, setIsIOS] = useState(false);
- const [isStandalone, setIsStandalone] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [deviceType, setDeviceType] = useState('unknown');
+  const [isVisible, setIsVisible] = useState(false);
 
- useEffect(() => {
-   const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-   setIsIOS(isIOSDevice);
-   setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isAndroid = /android/.test(userAgent);
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    
+    setDeviceType(isIOS ? 'ios' : isAndroid ? 'android' : 'unknown');
 
-   if (isIOSDevice && !isStandalone) {
-     setTimeout(() => setShowPrompt(true), 2000);
-   }
+    // Check if prompt was recently dismissed
+    const lastDismissed = localStorage.getItem('pwaPromptDismissed');
+    const showAfterDismiss = !lastDismissed || Date.now() - parseInt(lastDismissed) > 7 * 24 * 60 * 60 * 1000; // 7 days
 
-   const handler = (e) => {
-     e.preventDefault();
-     setDeferredPrompt(e);
-     setTimeout(() => setShowPrompt(true), 2000);
-   };
+    const handler = (e) => {
+      e.preventDefault();
+      if (showAfterDismiss) {
+        setDeferredPrompt(e);
+        setShowPrompt(true);
+        setTimeout(() => setIsVisible(true), 100);
+      }
+    };
 
-   window.addEventListener('beforeinstallprompt', handler);
-   const mediaQuery = window.matchMedia('(display-mode: standalone)');
-   mediaQuery.addListener((e) => setIsStandalone(e.matches));
+    window.addEventListener('beforeinstallprompt', handler);
+    
+    if (isIOS && !window.navigator.standalone && showAfterDismiss) {
+      setShowPrompt(true);
+      setTimeout(() => setIsVisible(true), 100);
+    }
 
-   return () => {
-     window.removeEventListener('beforeinstallprompt', handler);
-     mediaQuery.removeListener((e) => setIsStandalone(e.matches));
-   };
- }, []);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
 
- const handleInstallClick = async () => {
-   if (!deferredPrompt) return;
-   deferredPrompt.prompt();
-   const { outcome } = await deferredPrompt.userChoice;
-   setDeferredPrompt(null);
-   setShowPrompt(false);
- };
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+    handleClose();
+  };
 
- if (!showPrompt || isStandalone) return null;
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(() => setShowPrompt(false), 300); // Wait for animation
+    localStorage.setItem('pwaPromptDismissed', Date.now().toString());
+  };
 
- return (
-   <AnimatePresence>
-     <motion.div 
-       initial={{ y: 100, opacity: 0 }}
-       animate={{ y: 0, opacity: 1 }}
-       exit={{ y: 100, opacity: 0 }}
-       className="fixed bottom-4 left-4 right-4 z-50"
-     >
-       <div className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-6">
-         <div className="flex flex-col items-center">
-           <div className="w-16 h-16 mb-4 bg-secondery rounded-full flex items-center justify-center">
-             <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                     d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-             </svg>
-           </div>
-           
-           <h3 className="text-xl font-semibold text-gray-800 mb-2">
-             Install Funoon Fiesta
-           </h3>
+  if (!showPrompt) return null;
 
-           {isIOS ? (
-             <motion.div 
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="text-center"
-             >
-               <p className="text-gray-600 mb-4">Follow these steps to install:</p>
-               <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                 <ol className="text-left space-y-3">
-                   <motion.li 
-                     initial={{ x: -20, opacity: 0 }}
-                     animate={{ x: 0, opacity: 1 }}
-                     transition={{ delay: 0.2 }}
-                     className="flex items-center text-gray-700"
-                   >
-                     <span className="mr-2 flex-shrink-0 w-6 h-6 flex items-center justify-center bg-secondery text-white rounded-full text-sm">1</span>
-                     Tap <span className="mx-2 p-1 bg-gray-200 rounded">
-                       <svg className="w-5 h-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                         <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                       </svg>
-                     </span> Share
-                   </motion.li>
-                   <motion.li 
-                     initial={{ x: -20, opacity: 0 }}
-                     animate={{ x: 0, opacity: 1 }}
-                     transition={{ delay: 0.3 }}
-                     className="flex items-center text-gray-700"
-                   >
-                     <span className="mr-2 flex-shrink-0 w-6 h-6 flex items-center justify-center bg-secondery text-white rounded-full text-sm">2</span>
-                     Select 'Add to Home Screen'
-                   </motion.li>
-                   <motion.li 
-                     initial={{ x: -20, opacity: 0 }}
-                     animate={{ x: 0, opacity: 1 }}
-                     transition={{ delay: 0.4 }}
-                     className="flex items-center text-gray-700"
-                   >
-                     <span className="mr-2 flex-shrink-0 w-6 h-6 flex items-center justify-center bg-secondery text-white rounded-full text-sm">3</span>
-                     Tap 'Add' to install
-                   </motion.li>
-                 </ol>
-               </div>
-               <motion.button
-                 whileHover={{ scale: 1.05 }}
-                 whileTap={{ scale: 0.95 }}
-                 onClick={() => setShowPrompt(false)}
-                 className="w-full px-6 py-3 bg-secondery text-white rounded-lg font-medium shadow-lg hover:bg-opacity-90 transition-all"
-               >
-                 Got it
-               </motion.button>
-             </motion.div>
-           ) : (
-             <motion.div 
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="w-full text-center"
-             >
-               <p className="text-gray-600 mb-6">
-                 Install our app for a faster, enhanced experience with offline access
-               </p>
-               <div className="flex flex-col sm:flex-row gap-3">
-                 <motion.button
-                   whileHover={{ scale: 1.05 }}
-                   whileTap={{ scale: 0.95 }}
-                   onClick={handleInstallClick}
-                   className="px-6 py-3 bg-secondery rounded-lg font-medium shadow-lg hover:bg-opacity-90 transition-all"
-                 >
-                   Install Now
-                 </motion.button>
-                 <motion.button
-                   whileHover={{ scale: 1.05 }}
-                   whileTap={{ scale: 0.95 }}
-                   onClick={() => setShowPrompt(false)}
-                   className="px-6 py-3 border border-gray-300 rounded-lg text-black font-medium hover:bg-gray-50 transition-all"
-                 >
-                   Maybe Later
-                 </motion.button>
-               </div>
-             </motion.div>
-           )}
-         </div>
-       </div>
-     </motion.div>
-   </AnimatePresence>
- );
+  const benefits = [
+    { icon: ZapIcon, text: "Faster access to results" },
+    { icon: BellIcon, text: "Instant notifications" },
+    { icon: PhoneIcon, text: "Works offline" }
+  ];
+
+  return (
+    <div className={`fixed bottom-0 left-0 right-0 p-4 bg-opacity-95 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+      isVisible ? 'opacity-100' : 'opacity-0'
+    }`}>
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-6 transform transition-transform duration-300">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-3">
+            <div className="bg-red-600 p-2 rounded-lg">
+              {deviceType === 'ios' ? (
+                <ShareIcon className="w-6 h-6 text-white" />
+              ) : (
+                <PlusCircleIcon className="w-6 h-6 text-white" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold">Install Funoon Fiesta</h3>
+              <p className="text-sm text-gray-500">Get the full experience</p>
+            </div>
+          </div>
+          <button 
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-full"
+          >
+            <XIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex gap-6 justify-center mb-6">
+            {benefits.map(({ icon: Icon, text }) => (
+              <div key={text} className="flex flex-col items-center gap-2">
+                <div className="bg-red-50 p-2 rounded-full">
+                  <Icon className="w-5 h-5 text-red-600" />
+                </div>
+                <span className="text-xs text-gray-600 text-center">{text}</span>
+              </div>
+            ))}
+          </div>
+
+          {deviceType === 'ios' ? (
+            <ol className="space-y-3 text-gray-600 bg-gray-50 p-4 rounded-lg">
+              <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                Tap the <ShareIcon className="w-4 h-4 inline mx-1" /> share button
+              </li>
+              <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                Scroll and select "Add to Home Screen"
+              </li>
+              <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                <span className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                Tap "Add" to install
+              </li>
+            </ol>
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex gap-3">
+                <button
+                  onClick={handleInstallClick}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+                >
+                  <PlusCircleIcon className="w-5 h-5" />
+                  Install App
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PWAInstallPrompt;

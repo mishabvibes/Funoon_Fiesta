@@ -1,72 +1,19 @@
 {
-    "name": "Funoon Fiesta Art Festival",
-    "short_name": "Funoon Arts",
-    "description": "Manage and track results for the Funoon Fiesta Art Festival - celebrating creativity and artistic excellence",
-    "categories": ["education", "art", "events"],
-    "icons": [
+  "name": "Funoon Fiesta",
+  "short_name": "Fest App",
+  "icons": [
       {
-        "src": "/android-chrome-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png",
-        "purpose": "any"
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
       },
       {
-        "src": "/android-chrome-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png",
-        "purpose": "any"
-      },
-      {
-        "src": "/maskable-icon-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png",
-        "purpose": "maskable"
-      },
-      {
-        "src": "/apple-touch-icon.png",
-        "sizes": "180x180",
-        "type": "image/png",
-        "purpose": "apple-touch-icon"
-      },
-      {
-        "src": "/favicon-32x32.png",
-        "sizes": "32x32",
-        "type": "image/png",
-        "purpose": "favicon"
+          "src": "/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
       }
-    ],
-    "theme_color": "#6366f1",
-    "background_color": "#f8fafc",
-    "start_url": "/?source=pwa",
-    "display": "standalone",
-    "orientation": "any",
-    "scope": "/",
-    "prefer_related_applications": false,
-    "shortcuts": [
-      {
-        "name": "View Results",
-        "short_name": "Results",
-        "description": "Check competition results",
-        "url": "/results",
-        "icons": [{ "src": "/results-icon-96x96.png", "sizes": "96x96" }]
-      },
-      {
-        "name": "My Submissions",
-        "short_name": "Submissions", 
-        "description": "View your submissions",
-        "url": "/submissions",
-        "icons": [{ "src": "/submissions-icon-96x96.png", "sizes": "96x96" }]
-      }
-    ],
-    "screenshots": [
-      {
-        "src": "/screenshot-1.png",
-        "sizes": "1280x720",
-        "type": "image/png",
-        "label": "Homepage of Funoon Fiesta"
-      }
-    ],
-    "edge_side_panel": {
-      "preferred_width": 400
-    }
-  }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
