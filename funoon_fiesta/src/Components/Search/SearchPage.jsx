@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useResults } from "../../../context/DataContext";
 
@@ -7,14 +7,34 @@ import { motion } from 'framer-motion'
 // variants
 import { fadeIn } from '../FrameMotion/variants'
 
+const STORAGE_KEY = 'programResults';
 
 const SearchPage = () => {
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
     const { results } = useResults();
+    const [localResults, setLocalResults] = useState([]);
+
+    // Load data from localStorage on component mount
+    useEffect(() => {
+        const storedResults = localStorage.getItem(STORAGE_KEY);
+        if (storedResults) {
+            setLocalResults(JSON.parse(storedResults));
+        }
+    }, []);
+
+    // Update localStorage when new results come in
+    useEffect(() => {
+        if (results && results.length > 0) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+            setLocalResults(results);
+        }
+    }, [results]);
 
     const filteredResults = useMemo(() => {
-        const allPrograms = [...new Set(results.map((result) => result.programName))];
+        // Use localResults if available, otherwise fall back to results
+        const dataToUse = localResults.length > 0 ? localResults : results;
+        const allPrograms = [...new Set(dataToUse.map((result) => result.programName))];
 
         if (!search)
             return allPrograms.map((program, index) => ({
@@ -30,7 +50,7 @@ const SearchPage = () => {
                 _id: String(index + 1),
                 programName: program,
             }));
-    }, [search, results]);
+    }, [search, results, localResults]);
 
     return (
         <div className="relative overflow-x-hidden">

@@ -10,6 +10,9 @@ import img from '../../assets/img/poster.jpeg';
 import img1 from '../../assets/img/poster1.jpg';
 import img2 from '../../assets/img/poster2.jpg';
 
+const STORAGE_KEY = 'programWinners';
+const PROGRAM_DATA_KEY = 'programData';
+
 const PosterPage = () => {
   const { programName } = useParams();
   const { results } = useResults();
@@ -57,6 +60,29 @@ const PosterPage = () => {
     }
   };
 
+  // Load cached data on component mount
+  useEffect(() => {
+    const loadCachedData = () => {
+      try {
+        const cachedWinners = localStorage.getItem(`${STORAGE_KEY}_${programName}`);
+        const cachedProgramData = localStorage.getItem(`${PROGRAM_DATA_KEY}_${programName}`);
+        
+        if (cachedWinners) {
+          setProgramWinners(JSON.parse(cachedWinners));
+        }
+        
+        if (cachedProgramData) {
+          setProgramData(JSON.parse(cachedProgramData));
+        }
+      } catch (error) {
+        console.error('Error loading cached data:', error);
+      }
+    };
+
+    loadCachedData();
+  }, [programName]);
+
+  // Update data when results change and cache it
   useEffect(() => {
     if (results.length > 0 && programName) {
       const programInfo = results.find(
@@ -85,11 +111,22 @@ const PosterPage = () => {
         });
       }
 
-      setProgramWinners(formattedResults);
-      setProgramData({
+      const newProgramData = {
         category: programInfo?.category || "",
         stage: programInfo?.stage || "ON STAGE"
-      });
+      };
+
+      // Update state
+      setProgramWinners(formattedResults);
+      setProgramData(newProgramData);
+
+      // Cache data
+      try {
+        localStorage.setItem(`${STORAGE_KEY}_${programName}`, JSON.stringify(formattedResults));
+        localStorage.setItem(`${PROGRAM_DATA_KEY}_${programName}`, JSON.stringify(newProgramData));
+      } catch (error) {
+        console.error('Error caching data:', error);
+      }
     }
   }, [results, programName]);
 
